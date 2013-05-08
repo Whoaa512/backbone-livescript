@@ -1,5 +1,6 @@
 module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-coffeelint'
+  grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-qunit'
@@ -11,22 +12,25 @@ module.exports = (grunt) ->
       options:
         max_line_length:
           level: 'warn'
+    concat:
+      dist:
+        src: [
+          'coffee/backbone.coffee'
+          'coffee/events.coffee'
+          'coffee/model.coffee'
+          'coffee/collection.coffee'
+          'coffee/view.coffee'
+          'coffee/router.coffee'
+          'coffee/history.coffee'
+          'coffee/helpers.coffee'
+        ]
+        dest: 'backbone.coffee'
     coffee:
       backbone:
         options:
           join: true
         files:
-          # concat then compile into single file
-          'backbone.js': [
-            'coffee/backbone.coffee'
-            'coffee/events.coffee'
-            'coffee/model.coffee'
-            'coffee/collection.coffee'
-            'coffee/view.coffee'
-            'coffee/router.coffee'
-            'coffee/history.coffee'
-            'coffee/helpers.coffee'
-          ]
+          'backbone.js': ['backbone.coffee']
     uglify:
       options:
         mangle: true
@@ -41,6 +45,6 @@ module.exports = (grunt) ->
       files: ['coffee/*.coffee']
       tasks: ['default', 'test']
 
-  grunt.registerTask 'default', ['coffeelint', 'coffee']
+  grunt.registerTask 'default', ['coffeelint', 'concat', 'coffee']
   grunt.registerTask 'build', ['default', 'uglify']
   grunt.registerTask 'test', ['qunit']
