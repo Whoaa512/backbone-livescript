@@ -56,7 +56,9 @@
     emulateHTTP: false,
     emulateJSON: false,
     ajax: function() {
-      return Backbone.$.ajax.apply(Backbone.$, arguments);
+      var _ref;
+
+      return (_ref = Backbone.$).ajax.apply(_ref, arguments);
     },
     sync: function(method, model, options) {
       var beforeSend, params, type, xhr;
@@ -136,7 +138,7 @@
     Events.on = function(name, callback, context) {
       var events, _base, _ref, _ref1;
 
-      if (!eventsApi(this, 'on', name, [callback, context]) || !callback) {
+      if (!(eventsApi(this, 'on', name, [callback, context]) && callback)) {
         return this;
       }
       if ((_ref = this._events) == null) {
@@ -170,7 +172,7 @@
     };
 
     Events.off = function(name, callback, context) {
-      var ev, events, i, j, names, retain, _i, _j, _ref, _ref1;
+      var ev, events, names, retain, _i, _j, _len, _len1;
 
       if (!this._events || !eventsApi(this, 'off', name, [callback, context])) {
         return this;
@@ -180,15 +182,15 @@
         return this;
       }
       names = name ? [name] : _.keys(this._events);
-      for (i = _i = 0, _ref = names.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        name = names[i];
+      for (_i = 0, _len = names.length; _i < _len; _i++) {
+        name = names[_i];
         events = this._events[name];
         if (events) {
           retain = [];
           this._events[name] = retain;
           if (callback || context) {
-            for (j = _j = 0, _ref1 = events.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; j = 0 <= _ref1 ? ++_j : --_j) {
-              ev = events[j];
+            for (_j = 0, _len1 = events.length; _j < _len1; _j++) {
+              ev = events[_j];
               if ((callback && callback !== ev.callback && callback !== ev.callback._callback) || (context && context !== ev.context)) {
                 retain.push(ev);
               }
@@ -284,9 +286,7 @@
 
     i = -1;
     l = events.length;
-    a1 = args[0];
-    a2 = args[1];
-    a3 = args[2];
+    a1 = args[0], a2 = args[1], a3 = args[2];
     switch (args.length) {
       case 0:
         _results = [];
@@ -433,7 +433,7 @@
     };
 
     Model.prototype.set = function(key, val, options) {
-      var attr, attrs, changes, changing, current, i, prev, silent, unset, v, _i, _ref;
+      var attr, attrs, change, changes, changing, current, prev, silent, unset, v, _i, _len;
 
       if (options == null) {
         options = {};
@@ -486,8 +486,9 @@
         if (changes.length) {
           this._pending = true;
         }
-        for (i = _i = 0, _ref = changes.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          this.trigger('change:' + changes[i], this, current[changes[i]], options);
+        for (_i = 0, _len = changes.length; _i < _len; _i++) {
+          change = changes[_i];
+          this.trigger('change:' + change, this, current[change], options);
         }
       }
       if (changing) {
@@ -850,7 +851,7 @@
     };
 
     Collection.prototype.set = function(models, options) {
-      var add, at, attrs, existing, i, merge, model, modelMap, order, remove, sort, sortAttr, sortable, toAdd, toRemove, _i, _j, _k, _ref, _ref1, _ref2;
+      var add, at, attrs, existing, i, merge, model, modelMap, order, remove, sort, sortAttr, sortable, toAdd, toRemove, _i, _j, _k, _len, _ref, _ref1;
 
       if (options == null) {
         options = {};
@@ -935,8 +936,8 @@
       if (options.silent) {
         return this;
       }
-      for (i = _k = 0, _ref2 = toAdd.length; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-        model = toAdd[i];
+      for (_k = 0, _len = toAdd.length; _k < _len; _k++) {
+        model = toAdd[_k];
         model.trigger('add', model, this, options);
       }
       if (sort || (order && order.length)) {
@@ -946,13 +947,15 @@
     };
 
     Collection.prototype.reset = function(models, options) {
-      var i, _i, _ref;
+      var model, _i, _len, _ref;
 
       if (options == null) {
         options = {};
       }
-      for (i = _i = 0, _ref = this.models.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        this._removeReference(this.models[i]);
+      _ref = this.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        model = _ref[_i];
+        this._removeReference(model);
       }
       options.previousModels = this.models;
       this._reset();
@@ -1002,10 +1005,12 @@
     };
 
     Collection.prototype.get = function(obj) {
+      var _ref;
+
       if (obj == null) {
         return void 0;
       }
-      return this._byId[obj.id != null ? obj.id : obj.cid || obj];
+      return this._byId[(_ref = obj.id) != null ? _ref : obj.cid || obj];
     };
 
     Collection.prototype.at = function(index) {
@@ -1059,9 +1064,9 @@
       var iterator;
 
       value = value || this.comparator;
-      iterator = _.isFunction(value) ? value : (function(model) {
+      iterator = _.isFunction(value) ? value : function(model) {
         return model.get(value);
-      });
+      };
       return _.sortedIndex(this.models, model, iterator, context);
     };
 
@@ -1327,7 +1332,7 @@
         if (this.className) {
           attrs['class'] = _.result(this, 'className');
         }
-        $el = Backbone.$('<' + _.result(this, 'tagName') + '>').attr(attrs);
+        $el = Backbone.$("<" + (_.result(this, 'tagName')) + ">").attr(attrs);
         return this.setElement($el, false);
       } else {
         return this.setElement(_.result(this, 'el'), false);
@@ -1532,7 +1537,7 @@
       fragment = this.getFragment();
       docMode = document.documentMode;
       oldIE = isExplorer.exec(navigator.userAgent.toLowerCase()) && (!docMode || docMode <= 7);
-      this.root = ('/' + this.root + '/').replace(rootStripper, '/');
+      this.root = ("/" + this.root + "/").replace(rootStripper, '/');
       if (oldIE && this._wantsHashChange) {
         this.iframe = Backbone.$('<iframe src="javascript:0" tabindex="-1" />').hide().appendTo('body')[0].contentWindow;
         this.navigate(fragment);

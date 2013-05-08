@@ -32,12 +32,12 @@ class Backbone.Collection
   model: Model
   
   constructor: (models, options) ->
-    options or (options = {})
+    options or= {}
     @model = options.model if options.model
-    @comparator = options.comparator if !_.isUndefined options.comparator
+    @comparator = options.comparator if not _.isUndefined options.comparator
     @_reset()
-    @initialize.apply @, arguments
-    @reset(models, _.extend({silent: true}, options)) if models
+    @initialize arguments...
+    @reset models, _.extend({silent: true}, options) if models
   
   # Initialize is an empty function by default. Override it with your own
   # initialization logic.
@@ -59,17 +59,17 @@ class Backbone.Collection
     models = if _.isArray(models) then models.slice() else [models]
     for i in [0...models.length]
       model = @get models[i]
-      continue if !model
+      continue unless model
       delete @_byId[model.id]
       delete @_byId[model.cid]
       index = @indexOf model
       @models.splice index, 1
       @length--
-      if !options.silent
+      unless options.silent
         options.index = index
         model.trigger 'remove', model, @, options
       @_removeReference model
-    @
+    this
 
   # Update a collection by `set`-ing a new list of models, adding new ones,
   # removing models that are no longer present, and merging models that
@@ -78,25 +78,25 @@ class Backbone.Collection
   set: (models, options = {}) ->
     options = _.defaults options, setOptions
     models = @parse(models, options) if options.parse
-    if !_.isArray models
+    unless _.isArray models
       models = if models then [models] else []
     at = options.at
     sortable = @comparator and !at? and options.sort != false
-    sortAttr = if _.isString(@comparator) then @comparator else null
+    sortAttr = if _.isString @comparator then @comparator else null
     toAdd = []
     toRemove = []
     modelMap = {}
     add = options.add
     merge = options.merge
     remove = options.remove
-    order = if !sortable and add and remove then [] else false
+    order = if not sortable and add and remove then [] else false
 
     # Turn bare objects into model references, and prevent invalid models
     # from being added.
     for i in [0...models.length]
       attrs = models[i]
       model = @_prepareModel attrs, options
-      continue if !model
+      continue unless model
 
       # If a duplicate is found, prevent it from being added and
       # optionally merge it into the existing model.
@@ -122,7 +122,7 @@ class Backbone.Collection
     if remove
       for i in [0...@length]
         model = @models[i]
-        toRemove.push(model) if !modelMap[model.cid]
+        toRemove.push model unless modelMap[model.cid]
       @remove(toRemove, options) if toRemove.length
 
     # See if sorting is needed, update `length` and splice in new models.
@@ -136,26 +136,24 @@ class Backbone.Collection
         push.apply @models, (order or toAdd)
 
     # Silently sort the collection if appropriate.
-    @sort(silent: true) if sort
+    @sort silent: true if sort
 
     return @ if options.silent
 
     # Trigger `add` events.
-    for i in [0...toAdd.length]
-      model = toAdd[i]
-      model.trigger 'add', model, @, options
+    for model in toAdd
+      model.trigger 'add', model, this, options
 
     # Trigger `sort` if the collection was sorted.
-    @trigger('sort', @, options) if sort or (order and order.length)
-    @
+    @trigger 'sort', this, options if sort or (order and order.length)
+    this
     
   # When you have more items than you want to add or remove individually,
   # you can reset the entire set with a new list of models, without firing
   # any granular `add` or `remove` events. Fires `reset` when finished.
   # Useful for bulk operations and optimizations.
   reset: (models, options = {}) ->
-    for i in [0...@models.length]
-      @_removeReference @models[i]
+    @_removeReference model for model in @models
     options.previousModels = @models
     @_reset()
     @add models, _.extend({silent: true}, options)
@@ -192,7 +190,7 @@ class Backbone.Collection
   # Get a model from the set by id.
   get: (obj) ->
     return undefined if !obj?
-    @_byId[if obj.id? then obj.id else obj.cid or obj]
+    @_byId[obj.id ? (obj.cid or obj)]
 
   # Get the model at the given index.
   at: (index) -> @models[index]
@@ -202,11 +200,10 @@ class Backbone.Collection
   where: (attrs, first) ->
     if _.isEmpty attrs
       return if first then undefined else []
-    @[if first then 'find' else 'filter']((model) ->
+    @[if first then 'find' else 'filter'] (model) ->
       for key, v of attrs
         return false if v != model.get(key)
       true
-    )
 
   # Return the first model with matching attributes. Useful for simple cases
   # of `find`.
@@ -216,20 +213,20 @@ class Backbone.Collection
   # normal circumstances, as the set will maintain sort order as each item
   # is added.
   sort: (options = {}) ->
-    throw new Error('Cannot sort a set without a comparator') if !@comparator
+    throw new Error('Cannot sort a set without a comparator') unless @comparator
     # Run sort based on type of `comparator`.
     if _.isString(@comparator) or @comparator.length == 1
       @models = @sortBy @comparator, @
     else
       @models.sort _.bind(@comparator, @)
-    @trigger('sort', @, options) if !options.silent
-    @
+    @trigger 'sort', this, options if !options.silent
+    this
   
   # Figure out the smallest index at which a model should be inserted so as
   # to maintain order.
   sortedIndex: (model, value, context) ->
     value = value or @comparator
-    iterator = if _.isFunction(value) then value else ((model) -> model.get value)
+    iterator = if _.isFunction value then value else (model) -> model.get(value)
     _.sortedIndex @models, model, iterator, context
 
   # Pluck an attribute from each model in the collection.
@@ -246,7 +243,7 @@ class Backbone.Collection
     options.success = (resp) ->
       method = if options.reset then 'reset' else 'set'
       collection[method] resp, options
-      success(collection, resp, options) if success
+      success collection, resp, options if success
       collection.trigger 'sync', collection, resp, options
     wrapError @, options
     @sync 'read', @, options
@@ -257,13 +254,13 @@ class Backbone.Collection
   create: (model, options = {}) ->
     options = _.clone options
     model = @_prepareModel model, options
-    return false if !model
-    @add(model, options) if !options.wait
+    return false unless model
+    @add(model, options) unless options.wait
     collection = @
     success = options.success
     options.success = (resp) ->
-      collection.add(model, options) if options.wait
-      success(model, resp, options) if success
+      collection.add model, options if options.wait
+      success model, resp, options if success
     model.save null, options
     model
   
@@ -285,19 +282,19 @@ class Backbone.Collection
   # collection.
   _prepareModel: (attrs, options = {}) ->
     if attrs instanceof Model
-      attrs.collection = @ if !attrs.collection
+      attrs.collection = this unless attrs.collection
       return attrs
-    options.collection = @
+    options.collection = this
     model = new @model attrs, options
-    if !model._validate attrs, options
-      @trigger 'invalid', @, attrs, options
+    unless model._validate attrs, options
+      @trigger 'invalid', this, attrs, options
       return false
     model
     
   # Internal method to sever a model's ties to a collection.
   _removeReference: (model) ->
-    delete model.collection if @ == model.collection
-    model.off 'all', @_onModelEvent, @
+    delete model.collection if this == model.collection
+    model.off 'all', @_onModelEvent, this
 
   # Internal method called every time a model in the set fires an event.
   # Sets need to update their indexes when models change ids. All other
@@ -307,7 +304,7 @@ class Backbone.Collection
     return if (event == 'add' or event == 'remove') and collection != @
     @remove model, options if event == 'destroy'
     if model and event == "change:#{model.idAttribute}"
-      delete @_byId[model.previous(model.idAttribute)]
+      delete @_byId[model.previous model.idAttribute]
       @_byId[model.id] = model if model.id?
     @trigger.apply @, arguments
 
