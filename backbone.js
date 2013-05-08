@@ -5,7 +5,7 @@
   (c) 2011-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
   Backbone may be freely distributed under the MIT license.
   For all details and documentation:
-  http://backbonejs.org
+  http://www.backbonecoffee.org
 */
 
 
