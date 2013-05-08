@@ -1,7 +1,7 @@
 {
   "name"          : "backbone",
-  "description"   : "Give your JS App some Backbone with Models, Views, Collections, and Events.",
-  "url"           : "http://backbonejs.org",
+  "description"   : "Give your JS and CoffeeScript Apps some Backbone with Models, Views, Collections, and Events.",
+  "url"           : "http://backbonecoffee.org",
   "keywords"      : ["model", "view", "controller", "router", "server", "client", "browser"],
   "author"        : "Jeremy Ashkenas <jeremy@documentcloud.org>",
   "dependencies": {
@@ -14,10 +14,7 @@
     "grunt-contrib-qunit": "~0.2.1",
     "grunt-contrib-watch": "~0.4.0"
   },
-  "scripts": {
-    "test": "phantomjs test/vendor/runner.js test/index.html?noglobals=true && coffee test/model.coffee"
-  },
-  "main"          : "backbone.js",
+  "main"          : "backbone.coffee",
   "version"       : "1.0.0",
   "license"       : "MIT"
 }

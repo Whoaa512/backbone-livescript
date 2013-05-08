@@ -4,9 +4,9 @@
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="chrome=1" />
   <meta name="viewport" content="width=device-width">
-  <link rel="canonical" href="http://backbonejs.org" />
+  <link rel="canonical" href="http://backbonecoffee.org" />
   <link rel="icon" href="docs/images/favicon.ico" />
-  <title>Backbone.js</title>
+  <title>Backbone.coffee</title>
   <style>
     body {
       font-size: 14px;
@@ -47,14 +47,18 @@
         font-size: 11px;
         line-height: 14px;
         margin: 5px 0 0 0;
-        padding-left: 0px;
-        list-style-type: none;
-        font-family: Lucida Grande;
+				padding-left: 15px;
+				letter-spacing: -0.075em;
+        font-family: monospace;
+				color: gray;
       }
         .toc_section li {
           cursor: pointer;
           margin: 0 0 3px 0;
         }
+					.toc_section li b {
+						font-family: "Lucida Grande";
+          }
           .toc_section li a {
             text-decoration: none;
             color: black;
@@ -69,7 +73,6 @@
     }
     img#logo {
       width: 450px;
-      height: 80px;
     }
     div.run {
       position: absolute;
@@ -109,45 +112,21 @@
     }
     a.punch {
       display: inline-block;
-      background: #4162a8;
-      border-top: 1px solid #38538c;
-      border-right: 1px solid #1f2d4d;
-      border-bottom: 1px solid #151e33;
-      border-left: 1px solid #1f2d4d;
-      -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-      -ms-border-radius: 4px;
-      -o-border-radius: 4px;
+      background: #8B4726;
       border-radius: 4px;
-      -webkit-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      -moz-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      -ms-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      -o-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
+      box-shadow: inset 0 1px 10px 1px #F4A460;
       color: #fff;
-      font: bold 14px "helvetica neue", helvetica, arial, sans-serif;
-      line-height: 1;
+      font: 14px "helvetica neue", helvetica, arial, sans-serif;
+      line-height: 1.5;
       margin-bottom: 15px;
       padding: 8px 0 10px 0;
       text-align: center;
-      text-shadow: 0px -1px 1px #1e2d4d;
       text-decoration: none;
       width: 225px;
       -webkit-background-clip: padding-box; }
       a.punch:hover {
-        -webkit-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        -moz-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        -ms-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        -o-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        cursor: pointer; }
-      a.punch:active {
-        -webkit-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        -moz-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        -ms-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        -o-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        margin-top: 5px; margin-bottom: 10px }
+				background: #CD6839;
+			}
     a img {
       border: 0;
     }
@@ -286,11 +265,11 @@
   <div id="sidebar" class="interface">
 
     <a class="toc_title" href="#">
-      Backbone.js <span class="version">(1.0.0)</span>
+      Backbone.coffee <span class="version">(1.0.0)</span>
     </a>
     <ul class="toc_section">
-      <li>&raquo; <a href="http://github.com/documentcloud/backbone">GitHub Repository</a></li>
-      <li>&raquo; <a href="docs/backbone.html">Annotated Source</a></li>
+      <li><a href="http://github.com/randallmorey/backbone-coffee"><b>GitHub Repository</b></a></li>
+      <li><a href="docs/backbone.html"><b>Annotated Source</b></a></li>
     </ul>
 
     <a class="toc_title" href="#introduction">
@@ -305,203 +284,203 @@
       Events
     </a>
     <ul class="toc_section">
-      <li>– <a href="#Events-on">on</a></li>
-      <li>– <a href="#Events-off">off</a></li>
-      <li>– <a href="#Events-trigger">trigger</a></li>
-      <li>– <a href="#Events-once">once</a></li>
-      <li>– <a href="#Events-listenTo">listenTo</a></li>
-      <li>– <a href="#Events-stopListening">stopListening</a></li>
-      <li>– <a href="#Events-listenToOnce">listenToOnce</a></li>
-      <li>- <a href="#Events-catalog"><b>Catalog of Built-in Events</b></a></li>
+      <li><a href="#Events-on">on</a></li>
+      <li><a href="#Events-off">off</a></li>
+      <li><a href="#Events-trigger">trigger</a></li>
+      <li><a href="#Events-once">once</a></li>
+      <li><a href="#Events-listenTo">listenTo</a></li>
+      <li><a href="#Events-stopListening">stopListening</a></li>
+      <li><a href="#Events-listenToOnce">listenToOnce</a></li>
+      <li><a href="#Events-catalog"><b>Catalog of Built-in Events</b></a></li>
     </ul>
 
     <a class="toc_title" href="#Model">
       Model
     </a>
     <ul class="toc_section">
-      <li>– <a href="#Model-extend">extend</a></li>
-      <li>– <a href="#Model-constructor">constructor / initialize</a></li>
-      <li>– <a href="#Model-get">get</a></li>
-      <li>– <a href="#Model-set">set</a></li>
-      <li>– <a href="#Model-escape">escape</a></li>
-      <li>– <a href="#Model-has">has</a></li>
-      <li>– <a href="#Model-unset">unset</a></li>
-      <li>– <a href="#Model-clear">clear</a></li>
-      <li>– <a href="#Model-id">id</a></li>
-      <li>– <a href="#Model-idAttribute">idAttribute</a></li>
-      <li>– <a href="#Model-cid">cid</a></li>
-      <li>– <a href="#Model-attributes">attributes</a></li>
-      <li>– <a href="#Model-changed">changed</a></li>
-      <li>– <a href="#Model-defaults">defaults</a></li>
-      <li>– <a href="#Model-toJSON">toJSON</a></li>
-      <li>– <a href="#Model-sync">sync</a></li>
-      <li>– <a href="#Model-fetch">fetch</a></li>
-      <li>– <a href="#Model-save">save</a></li>
-      <li>– <a href="#Model-destroy">destroy</a></li>
-      <li>– <a href="#Model-Underscore-Methods"><b>Underscore Methods (6)</b></a></li>
-      <li>– <a href="#Model-validate">validate</a></li>
-      <li>– <a href="#Model-validationError">validationError</a></li>
-      <li>– <a href="#Model-isValid">isValid</a></li>
-      <li>– <a href="#Model-url">url</a></li>
-      <li>– <a href="#Model-urlRoot">urlRoot</a></li>
-      <li>– <a href="#Model-parse">parse</a></li>
-      <li>– <a href="#Model-clone">clone</a></li>
-      <li>– <a href="#Model-isNew">isNew</a></li>
-      <li>– <a href="#Model-hasChanged">hasChanged</a></li>
-      <li>– <a href="#Model-changedAttributes">changedAttributes</a></li>
-      <li>– <a href="#Model-previous">previous</a></li>
-      <li>– <a href="#Model-previousAttributes">previousAttributes</a></li>
+      <li><a href="#Model-extend">extend</a></li>
+      <li><a href="#Model-constructor">constructor / initialize</a></li>
+      <li><a href="#Model-get">get</a></li>
+      <li><a href="#Model-set">set</a></li>
+      <li><a href="#Model-escape">escape</a></li>
+      <li><a href="#Model-has">has</a></li>
+      <li><a href="#Model-unset">unset</a></li>
+      <li><a href="#Model-clear">clear</a></li>
+      <li><a href="#Model-id">id</a></li>
+      <li><a href="#Model-idAttribute">idAttribute</a></li>
+      <li><a href="#Model-cid">cid</a></li>
+      <li><a href="#Model-attributes">attributes</a></li>
+      <li><a href="#Model-changed">changed</a></li>
+      <li><a href="#Model-defaults">defaults</a></li>
+      <li><a href="#Model-toJSON">toJSON</a></li>
+      <li><a href="#Model-sync">sync</a></li>
+      <li><a href="#Model-fetch">fetch</a></li>
+      <li><a href="#Model-save">save</a></li>
+      <li><a href="#Model-destroy">destroy</a></li>
+      <li><a href="#Model-Underscore-Methods"><b>Underscore Methods (6)</b></a></li>
+      <li><a href="#Model-validate">validate</a></li>
+      <li><a href="#Model-validationError">validationError</a></li>
+      <li><a href="#Model-isValid">isValid</a></li>
+      <li><a href="#Model-url">url</a></li>
+      <li><a href="#Model-urlRoot">urlRoot</a></li>
+      <li><a href="#Model-parse">parse</a></li>
+      <li><a href="#Model-clone">clone</a></li>
+      <li><a href="#Model-isNew">isNew</a></li>
+      <li><a href="#Model-hasChanged">hasChanged</a></li>
+      <li><a href="#Model-changedAttributes">changedAttributes</a></li>
+      <li><a href="#Model-previous">previous</a></li>
+      <li><a href="#Model-previousAttributes">previousAttributes</a></li>
     </ul>
 
     <a class="toc_title" href="#Collection">
       Collection
     </a>
     <ul class="toc_section">
-      <li>– <a href="#Collection-extend">extend</a></li>
-      <li>– <a href="#Collection-model">model</a></li>
-      <li>– <a href="#Collection-constructor">constructor / initialize</a></li>
-      <li>– <a href="#Collection-models">models</a></li>
-      <li>– <a href="#Collection-toJSON">toJSON</a></li>
-      <li>– <a href="#Collection-sync">sync</a></li>
-      <li>– <a href="#Collection-Underscore-Methods"><b>Underscore Methods (28)</b></a></li>
-      <li>– <a href="#Collection-add">add</a></li>
-      <li>– <a href="#Collection-remove">remove</a></li>
-      <li>– <a href="#Collection-reset">reset</a></li>
-      <li>– <a href="#Collection-set">set</a></li>
-      <li>– <a href="#Collection-get">get</a></li>
-      <li>– <a href="#Collection-at">at</a></li>
-      <li>– <a href="#Collection-push">push</a></li>
-      <li>– <a href="#Collection-pop">pop</a></li>
-      <li>– <a href="#Collection-unshift">unshift</a></li>
-      <li>– <a href="#Collection-shift">shift</a></li>
-      <li>– <a href="#Collection-slice">slice</a></li>
-      <li>– <a href="#Collection-length">length</a></li>
-      <li>– <a href="#Collection-comparator">comparator</a></li>
-      <li>– <a href="#Collection-sort">sort</a></li>
-      <li>– <a href="#Collection-pluck">pluck</a></li>
-      <li>– <a href="#Collection-where">where</a></li>
-      <li>– <a href="#Collection-findWhere">findWhere</a></li>
-      <li>– <a href="#Collection-url">url</a></li>
-      <li>– <a href="#Collection-parse">parse</a></li>
-      <li>– <a href="#Collection-clone">clone</a></li>
-      <li>– <a href="#Collection-fetch">fetch</a></li>
-      <li>– <a href="#Collection-create">create</a></li>
+      <li><a href="#Collection-extend">extend</a></li>
+      <li><a href="#Collection-model">model</a></li>
+      <li><a href="#Collection-constructor">constructor / initialize</a></li>
+      <li><a href="#Collection-models">models</a></li>
+      <li><a href="#Collection-toJSON">toJSON</a></li>
+      <li><a href="#Collection-sync">sync</a></li>
+      <li><a href="#Collection-Underscore-Methods"><b>Underscore Methods (28)</b></a></li>
+      <li><a href="#Collection-add">add</a></li>
+      <li><a href="#Collection-remove">remove</a></li>
+      <li><a href="#Collection-reset">reset</a></li>
+      <li><a href="#Collection-set">set</a></li>
+      <li><a href="#Collection-get">get</a></li>
+      <li><a href="#Collection-at">at</a></li>
+      <li><a href="#Collection-push">push</a></li>
+      <li><a href="#Collection-pop">pop</a></li>
+      <li><a href="#Collection-unshift">unshift</a></li>
+      <li><a href="#Collection-shift">shift</a></li>
+      <li><a href="#Collection-slice">slice</a></li>
+      <li><a href="#Collection-length">length</a></li>
+      <li><a href="#Collection-comparator">comparator</a></li>
+      <li><a href="#Collection-sort">sort</a></li>
+      <li><a href="#Collection-pluck">pluck</a></li>
+      <li><a href="#Collection-where">where</a></li>
+      <li><a href="#Collection-findWhere">findWhere</a></li>
+      <li><a href="#Collection-url">url</a></li>
+      <li><a href="#Collection-parse">parse</a></li>
+      <li><a href="#Collection-clone">clone</a></li>
+      <li><a href="#Collection-fetch">fetch</a></li>
+      <li><a href="#Collection-create">create</a></li>
     </ul>
 
     <a class="toc_title" href="#Router">
       Router
     </a>
     <ul class="toc_section">
-      <li>– <a href="#Router-extend">extend</a></li>
-      <li>– <a href="#Router-routes">routes</a></li>
-      <li>– <a href="#Router-constructor">constructor / initialize</a></li>
-      <li>– <a href="#Router-route">route</a></li>
-      <li>– <a href="#Router-navigate">navigate</a></li>
+      <li><a href="#Router-extend">extend</a></li>
+      <li><a href="#Router-routes">routes</a></li>
+      <li><a href="#Router-constructor">constructor / initialize</a></li>
+      <li><a href="#Router-route">route</a></li>
+      <li><a href="#Router-navigate">navigate</a></li>
     </ul>
 
     <a class="toc_title" href="#History">
       History
     </a>
     <ul class="toc_section">
-      <li>– <a href="#History-start">start</a></li>
+      <li><a href="#History-start">start</a></li>
     </ul>
 
     <a class="toc_title" href="#Sync">
       Sync
     </a>
     <ul class="toc_section">
-      <li>– <a href="#Sync">Backbone.sync</a></li>
-      <li>– <a href="#Sync-ajax">Backbone.ajax</a></li>
-      <li>– <a href="#Sync-emulateHTTP">Backbone.emulateHTTP</a></li>
-      <li>– <a href="#Sync-emulateJSON">Backbone.emulateJSON</a></li>
+      <li><a href="#Sync">Backbone.sync</a></li>
+      <li><a href="#Sync-ajax">Backbone.ajax</a></li>
+      <li><a href="#Sync-emulateHTTP">Backbone.emulateHTTP</a></li>
+      <li><a href="#Sync-emulateJSON">Backbone.emulateJSON</a></li>
     </ul>
 
     <a class="toc_title" href="#View">
       View
     </a>
     <ul class="toc_section">
-      <li>– <a href="#View-extend">extend</a></li>
-      <li>– <a href="#View-constructor">constructor / initialize</a></li>
-      <li>– <a href="#View-el">el</a></li>
-      <li>– <a href="#View-$el">$el</a></li>
-      <li>– <a href="#View-setElement">setElement</a></li>
-      <li>– <a href="#View-attributes">attributes</a></li>
-      <li>– <a href="#View-dollar">$ (jQuery)</a></li>
-      <li>– <a href="#View-render">render</a></li>
-      <li>– <a href="#View-remove">remove</a></li>
-      <li>– <a href="#View-delegateEvents">delegateEvents</a></li>
-      <li>– <a href="#View-undelegateEvents">undelegateEvents</a></li>
+      <li><a href="#View-extend">extend</a></li>
+      <li><a href="#View-constructor">constructor / initialize</a></li>
+      <li><a href="#View-el">el</a></li>
+      <li><a href="#View-$el">$el</a></li>
+      <li><a href="#View-setElement">setElement</a></li>
+      <li><a href="#View-attributes">attributes</a></li>
+      <li><a href="#View-dollar">$ (jQuery)</a></li>
+      <li><a href="#View-render">render</a></li>
+      <li><a href="#View-remove">remove</a></li>
+      <li><a href="#View-delegateEvents">delegateEvents</a></li>
+      <li><a href="#View-undelegateEvents">undelegateEvents</a></li>
     </ul>
 
     <a class="toc_title" href="#Utility">
       Utility
     </a>
     <ul class="toc_section">
-      <li>– <a href="#Utility-Backbone-noConflict">Backbone.noConflict</a></li>
-      <li>– <a href="#Utility-Backbone-$">Backbone.$</a></li>
+      <li><a href="#Utility-Backbone-noConflict">Backbone.noConflict</a></li>
+      <li><a href="#Utility-Backbone-$">Backbone.$</a></li>
     </ul>
 
     <a class="toc_title" href="#examples">
       Examples
     </a>
     <ul class="toc_section">
-      <li>– <a href="#examples-todos">Todos</a></li>
-      <li>– <a href="#examples-documentcloud">DocumentCloud</a></li>
-      <li>– <a href="#examples-usa-today">USA Today</a></li>
-      <li>– <a href="#examples-rdio">Rdio</a></li>
-      <li>– <a href="#examples-linkedin">LinkedIn Mobile</a></li>
-      <li>– <a href="#examples-hulu">Hulu</a></li>
-      <li>– <a href="#examples-quartz">Quartz</a></li>
-      <li>– <a href="#examples-flow">Flow</a></li>
-      <li>– <a href="#examples-gilt">Gilt Groupe</a></li>
-      <li>– <a href="#examples-newsblur">NewsBlur</a></li>
-      <li>– <a href="#examples-wordpress">WordPress.com</a></li>
-      <li>– <a href="#examples-foursquare">Foursquare</a></li>
-      <li>– <a href="#examples-bitbucket">Bitbucket</a></li>
-      <li>– <a href="#examples-disqus">Disqus</a></li>
-      <li>– <a href="#examples-khan-academy">Khan Academy</a></li>
-      <li>– <a href="#examples-do">Do</a></li>
-      <li>– <a href="#examples-irccloud">IRCCloud</a></li>
-      <li>– <a href="#examples-pitchfork">Pitchfork</a></li>
-      <li>– <a href="#examples-spin">Spin</a></li>
-      <li>– <a href="#examples-walmart">Walmart Mobile</a></li>
-      <li>– <a href="#examples-groupon">Groupon Now!</a></li>
-      <li>– <a href="#examples-basecamp">Basecamp</a></li>
-      <li>– <a href="#examples-slavery-footprint">Slavery Footprint</a></li>
-      <li>– <a href="#examples-stripe">Stripe</a></li>
-      <li>– <a href="#examples-airbnb">Airbnb</a></li>
-      <li>– <a href="#examples-diaspora">Diaspora</a></li>
-      <li>– <a href="#examples-soundcloud">SoundCloud Mobile</a></li>
-      <li>- <a href="#examples-artsy">Art.sy</a></li>
-      <li>– <a href="#examples-pandora">Pandora</a></li>
-      <li>– <a href="#examples-inkling">Inkling</a></li>
-      <li>– <a href="#examples-code-school">Code School</a></li>
-      <li>– <a href="#examples-cloudapp">CloudApp</a></li>
-      <li>– <a href="#examples-seatgeek">SeatGeek</a></li>
-      <li>– <a href="#examples-easel">Easel</a></li>
-      <li>– <a href="#examples-prose">Prose</a></li>
-      <li>- <a href="#examples-jolicloud">Jolicloud</a></li>
-      <li>– <a href="#examples-battlefield">Battlefield Play4Free</a></li>
-      <li>– <a href="#examples-syllabus">Syllabus</a></li>
-      <li>– <a href="#examples-salon">Salon.io</a></li>
-      <li>– <a href="#examples-tilemill">TileMill</a></li>
-      <li>– <a href="#examples-blossom">Blossom</a></li>
-      <li>– <a href="#examples-trello">Trello</a></li>
-      <li>– <a href="#examples-tzigla">Tzigla</a></li>
+      <li><a href="#examples-todos">Todos</a></li>
+      <li><a href="#examples-documentcloud">DocumentCloud</a></li>
+      <li><a href="#examples-usa-today">USA Today</a></li>
+      <li><a href="#examples-rdio">Rdio</a></li>
+      <li><a href="#examples-linkedin">LinkedIn Mobile</a></li>
+      <li><a href="#examples-hulu">Hulu</a></li>
+      <li><a href="#examples-quartz">Quartz</a></li>
+      <li><a href="#examples-flow">Flow</a></li>
+      <li><a href="#examples-gilt">Gilt Groupe</a></li>
+      <li><a href="#examples-newsblur">NewsBlur</a></li>
+      <li><a href="#examples-wordpress">WordPress.com</a></li>
+      <li><a href="#examples-foursquare">Foursquare</a></li>
+      <li><a href="#examples-bitbucket">Bitbucket</a></li>
+      <li><a href="#examples-disqus">Disqus</a></li>
+      <li><a href="#examples-khan-academy">Khan Academy</a></li>
+      <li><a href="#examples-do">Do</a></li>
+      <li><a href="#examples-irccloud">IRCCloud</a></li>
+      <li><a href="#examples-pitchfork">Pitchfork</a></li>
+      <li><a href="#examples-spin">Spin</a></li>
+      <li><a href="#examples-walmart">Walmart Mobile</a></li>
+      <li><a href="#examples-groupon">Groupon Now!</a></li>
+      <li><a href="#examples-basecamp">Basecamp</a></li>
+      <li><a href="#examples-slavery-footprint">Slavery Footprint</a></li>
+      <li><a href="#examples-stripe">Stripe</a></li>
+      <li><a href="#examples-airbnb">Airbnb</a></li>
+      <li><a href="#examples-diaspora">Diaspora</a></li>
+      <li><a href="#examples-soundcloud">SoundCloud Mobile</a></li>
+      <li><a href="#examples-artsy">Art.sy</a></li>
+      <li><a href="#examples-pandora">Pandora</a></li>
+      <li><a href="#examples-inkling">Inkling</a></li>
+      <li><a href="#examples-code-school">Code School</a></li>
+      <li><a href="#examples-cloudapp">CloudApp</a></li>
+      <li><a href="#examples-seatgeek">SeatGeek</a></li>
+      <li><a href="#examples-easel">Easel</a></li>
+      <li><a href="#examples-prose">Prose</a></li>
+      <li><a href="#examples-jolicloud">Jolicloud</a></li>
+      <li><a href="#examples-battlefield">Battlefield Play4Free</a></li>
+      <li><a href="#examples-syllabus">Syllabus</a></li>
+      <li><a href="#examples-salon">Salon.io</a></li>
+      <li><a href="#examples-tilemill">TileMill</a></li>
+      <li><a href="#examples-blossom">Blossom</a></li>
+      <li><a href="#examples-trello">Trello</a></li>
+      <li><a href="#examples-tzigla">Tzigla</a></li>
     </ul>
 
     <a class="toc_title" href="#faq">
       F.A.Q.
     </a>
     <ul class="toc_section">
-      <li>– <a href="#FAQ-why-backbone">Why Backbone?</a></li>
-      <li>– <a href="#FAQ-tim-toady">More Than One Way To Do It</a></li>
-      <li>– <a href="#FAQ-nested">Nested Models &amp; Collections</a></li>
-      <li>– <a href="#FAQ-bootstrap">Loading Bootstrapped Models</a></li>
-      <li>– <a href="#FAQ-extending">Extending Backbone</a></li>
-      <li>– <a href="#FAQ-mvc">Traditional MVC</a></li>
-      <li>– <a href="#FAQ-this">Binding "this"</a></li>
-      <li>– <a href="#FAQ-rails">Working with Rails</a></li>
+      <li><a href="#FAQ-why-backbone">Why Backbone?</a></li>
+      <li><a href="#FAQ-tim-toady">More Than One Way To Do It</a></li>
+      <li><a href="#FAQ-nested">Nested Models &amp; Collections</a></li>
+      <li><a href="#FAQ-bootstrap">Loading Bootstrapped Models</a></li>
+      <li><a href="#FAQ-extending">Extending Backbone</a></li>
+      <li><a href="#FAQ-mvc">Traditional MVC</a></li>
+      <li><a href="#FAQ-this">Binding "this"</a></li>
+      <li><a href="#FAQ-rails">Working with Rails</a></li>
     </ul>
 
     <a class="toc_title" href="#changelog">
@@ -513,41 +492,38 @@
   <div class="container">
 
     <p>
-      <img id="logo" src="docs/images/backbone.png" alt="Backbone.js" />
+      <img id="logo" src="docs/images/backbone.png" alt="Backbone.coffee" />
     </p>
 
     <p>
-      Backbone.js gives structure to web applications
+      Backbone.coffee gives structure to web applications
       by providing <b>models</b> with key-value binding and custom events,
       <b>collections</b> with a rich API of enumerable functions,
       <b>views</b> with declarative event handling, and connects it all to your
       existing API over a RESTful JSON interface.
     </p>
 
+		<p>
+			<strong>Backbone.coffee is a port of <a href="http://backbonejs.org">Backbone.js</a> written
+			in CoffeeScript</strong>.  It's fully compatible with Backbone.js (both coffee and js
+			files are included) and <a href="http://documentcloud.github.io/backbone/">it tracks the original repository</a>.
+			<strong>Master is currently up-to-date with Backbone.js version 1.0.0</strong>.
+		</p>
+
     <p>
-      The project is <a href="http://github.com/documentcloud/backbone/">hosted on GitHub</a>,
+      The project is <a href="http://github.com/randallmorey/backbone-coffee/">hosted on GitHub</a>,
       and the <a href="docs/backbone.html">annotated source code</a> is available,
       as well as an online <a href="test/">test suite</a>,
       an <a href="examples/todos/index.html">example application</a>,
-      a <a href="https://github.com/documentcloud/backbone/wiki/Tutorials%2C-blog-posts-and-example-sites">list of tutorials</a>
+      a <a href="https://github.com/randallmorey/backbone-coffee/wiki/Tutorials%2C-blog-posts-and-example-sites">list of tutorials</a>
       and a <a href="#examples">long list of real-world projects</a> that use Backbone.
-      Backbone is available for use under the <a href="http://github.com/documentcloud/backbone/blob/master/LICENSE">MIT software license</a>.
+      Backbone is available for use under the <a href="http://github.com/randallmorey/backbone-coffee/blob/master/LICENSE">MIT software license</a>.
     </p>
 
     <p>
-      You can report bugs and discuss features on the
-      <a href="http://github.com/documentcloud/backbone/issues">GitHub issues page</a>,
-      on Freenode IRC in the <tt>#documentcloud</tt> channel, post questions to the
-      <a href="https://groups.google.com/forum/#!forum/backbonejs">Google Group</a>,
-      add pages to the <a href="https://github.com/documentcloud/backbone/wiki">wiki</a>
-      or send tweets to <a href="http://twitter.com/documentcloud">@documentcloud</a>.
-    </p>
-
-    <p>
-      <i>
-        Backbone is an open-source component of
-        <a href="http://documentcloud.org/">DocumentCloud</a>.
-      </i>
+      You can report bugs and discuss features related to the original Backbone.js on the
+      <a href="http://github.com/documentcloud/backbone/issues">GitHub issues page</a>.  Report
+			bugs on the CoffeeScript port at <a href="http://github.com/randallmorey/backbone-coffee/issues">GitHub issues page</a>.
     </p>
 
     <h2 id="downloads">
@@ -557,22 +533,25 @@
 
     <table>
       <tr>
-        <td><a class="punch" href="backbone.js">Development Version (1.0.0)</a></td>
-        <td class="text"><i>58kb, Full source, tons of comments</i></td>
+        <td><a class="punch" href="backbone.coffee"><b>CoffeeScript Version</b><br>CoffeeScript (1.0.0)</a></td>
+        <td class="text"><i>50kb, Full source, with comments</i></td>
+      </tr>
+			<tr>
+        <td><a class="punch" href="backbone.js"><b>Development Version</b><br>JavaScript (1.0.0)</a></td>
+        <td class="text"><i>47kb, Compiled source, some comments</i></td>
       </tr>
       <tr>
-        <td><a class="punch" href="backbone-min.js">Production Version (1.0.0)</a></td>
+        <td><a class="punch" href="backbone-min.js"><b>Minified Version</b><br>JavaScript (1.0.0)</a></td>
         <td class="text" style="line-height: 16px;">
-          <i>6.3kb, Packed and gzipped</i><br />
           <small>(<a href="backbone-min.map">Source Map</a>)</small>
         </td>
       </tr>
       <tr>
-        <td><a class="punch" href="https://raw.github.com/documentcloud/backbone/master/backbone.js">Edge Version (master)</a></td>
+        <td><a class="punch" href="https://raw.github.com/randallmorey/backbone-coffee/master/backbone.coffee">Edge CoffeeScript Version<br>(master)</a></td>
         <td>
           <i>Unreleased, use at your own risk</i>
-          <a class="travis-badge" href="https://travis-ci.org/documentcloud/backbone">
-            <img src="https://travis-ci.org/documentcloud/backbone.png" />
+          <a class="travis-badge" href="https://travis-ci.org/randallmorey/backbone-coffee">
+            <img src="https://travis-ci.org/randallmorey/backbone-coffee.png" />
           </a>
         </td>
       </tr>
@@ -676,15 +655,14 @@
     </p>
 
 <pre class="runnable">
-var object = {};
+object = {}
 
-_.extend(object, Backbone.Events);
+_.extend object, Backbone.Events
 
-object.on("alert", function(msg) {
-  alert("Triggered " + msg);
-});
+object.on "alert", (msg) ->
+  alert "Triggered " + msg
 
-object.trigger("alert", "an event");
+object.trigger "alert", "an event"
 </pre>
 
     <p>
@@ -703,7 +681,7 @@ object.trigger("alert", "an event");
     </p>
 
 <pre>
-book.on("change:title change:author", ...);
+book.on "change:title change:author", &hellip;
 </pre>
 
     <p>
@@ -719,9 +697,8 @@ book.on("change:title change:author", ...);
     </p>
 
 <pre>
-proxy.on("all", function(eventName) {
-  object.trigger(eventName);
-});
+proxy.on "all", (eventName) ->
+  object.trigger eventName
 </pre>
 
     <p>
@@ -730,11 +707,10 @@ proxy.on("all", function(eventName) {
     </p>
 
 <pre>
-book.on({
-  "change:title": titleView.update,
-  "change:author": authorPane.update,
+book.on
+  "change:title": titleView.update
+  "change:author": authorPane.update
   "destroy": bookView.remove
-});
 </pre>
 
     <p id="Events-off">
@@ -749,20 +725,20 @@ book.on({
     </p>
 
 <pre>
-// Removes just the `onChange` callback.
-object.off("change", onChange);
+# Removes just the `onChange` callback.
+object.off "change", onChange
 
-// Removes all "change" callbacks.
-object.off("change");
+# Removes all "change" callbacks.
+object.off "change"
 
-// Removes the `onChange` callback for all events.
-object.off(null, onChange);
+# Removes the `onChange` callback for all events.
+object.off null, onChange
 
-// Removes all callbacks for `context` for all events.
-object.off(null, null, context);
+# Removes all callbacks for `context` for all events.
+object.off null, null, context
 
-// Removes all callbacks on `object`.
-object.off();
+# Removes all callbacks on `object`.
+object.off()
 </pre>
 
     <p>
@@ -795,7 +771,7 @@ object.off();
     </p>
 
 <pre>
-view.listenTo(model, 'change', view.render);
+view.listenTo model, 'change', view.render
 </pre>
 
     <p id="Events-stopListening">
@@ -809,9 +785,8 @@ view.listenTo(model, 'change', view.render);
     </p>
 
 <pre>
-view.stopListening();
-
-view.stopListening(model);
+view.stopListening()
+view.stopListening model
 </pre>
 
     <p id="Events-listenToOnce">
@@ -876,22 +851,19 @@ view.stopListening(model);
     </p>
 
 <pre class="runnable">
-var Sidebar = Backbone.Model.extend({
-  promptColor: function() {
-    var cssColor = prompt("Please enter a CSS color:");
-    this.set({color: cssColor});
-  }
-});
+class Sidebar extends Backbone.Model
+  promptColor: ->
+    cssColor = prompt "Please enter a CSS color:"
+    @set color: cssColor
 
-window.sidebar = new Sidebar;
+window.sidebar = new Sidebar
 
-sidebar.on('change:color', function(model, color) {
-  $('#sidebar').css({background: color});
-});
+sidebar.on 'change:color', (model, color) ->
+  $('#sidebar').css background: color
 
-sidebar.set({color: 'white'});
+sidebar.set color: 'white'
 
-sidebar.promptColor();
+sidebar.promptColor()
 </pre>
 
     <p id="Model-extend">
@@ -908,44 +880,30 @@ sidebar.promptColor();
     </p>
 
 <pre>
-var Note = Backbone.Model.extend({
+class Note extends Backbone.Model
+  initialize: -> &hellip;
+  author: -> &hellip;
+  coordinates: -> &hellip;
 
-  initialize: function() { ... },
+  allowedToEdit: (account) -> true
 
-  author: function() { ... },
-
-  coordinates: function() { ... },
-
-  allowedToEdit: function(account) {
-    return true;
-  }
-
-});
-
-var PrivateNote = Note.extend({
-
-  allowedToEdit: function(account) {
-    return account.owns(this);
-  }
-
-});
+class PrivateNote extends Note
+  allowedToEdit: (account) -> account.owns @
 </pre>
 
     <p class="warning">
-        Brief aside on <tt>super</tt>: JavaScript does not provide
+        Brief aside on <tt>super</tt>: CoffeeScript provides
         a simple way to call super &mdash; the function of the same name defined
         higher on the prototype chain. If you override a core function like
         <tt>set</tt>, or <tt>save</tt>, and you want to invoke the
-        parent object's implementation, you'll have to explicitly call it, along these lines:
+        parent object's implementation, just call "super" somewhere in your method:
     </p>
 
 <pre>
-var Note = Backbone.Model.extend({
-  set: function(attributes, options) {
-    Backbone.Model.prototype.set.apply(this, arguments);
-    ...
-  }
-});
+class Note extends Backbone.Model
+  set: (attributes, options) ->
+		super
+    &hellip;
 </pre>
 
     <p id="Model-constructor">
@@ -958,10 +916,9 @@ var Note = Backbone.Model.extend({
     </p>
 
 <pre>
-new Book({
-  title: "One Thousand and One Nights",
+new Book
+  title: "One Thousand and One Nights"
   author: "Scheherazade"
-});
 </pre>
 
     <p>
@@ -971,16 +928,13 @@ new Book({
     </p>
 
 <pre>
-var Library = Backbone.Model.extend({
-  constructor: function() {
-    this.books = new Books();
-    Backbone.Model.apply(this, arguments);
-  },
-  parse: function(data, options) {
-    this.books.reset(data.books);
-    return data.library;
-  }
-});
+class Library extends Backbone.Model
+  constructor: ->
+    @books = new Books
+		super
+  parse: (data, options) ->
+    @books.reset data.books
+    data.library
 </pre>
 
     <p>
@@ -1015,9 +969,11 @@ var Library = Backbone.Model.extend({
     </p>
 
 <pre>
-note.set({title: "March 20", content: "In his eyes she eclipses..."});
+note.set
+	title: "March 20"
+	content: "In his eyes she eclipses..."
 
-book.set("title", "A Scandal in Bohemia");
+book.set "title", "A Scandal in Bohemia"
 </pre>
 
     <p id="Model-escape">
@@ -1030,11 +986,10 @@ book.set("title", "A Scandal in Bohemia");
     </p>
 
 <pre class="runnable">
-var hacker = new Backbone.Model({
+hacker = new Backbone.Model
   name: "&lt;script&gt;alert('xss')&lt;/script&gt;"
-});
 
-alert(hacker.escape('name'));
+alert hacker.escape('name')
 </pre>
 
     <p id="Model-has">
@@ -1045,9 +1000,8 @@ alert(hacker.escape('name'));
     </p>
 
 <pre>
-if (note.has("title")) {
-  ...
-}
+if note.has "title"
+  &hellip;
 </pre>
 
     <p id="Model-unset">
@@ -1083,12 +1037,14 @@ if (note.has("title")) {
       transparently map from that key to <tt>id</tt>.
 
 <pre class="runnable">
-var Meal = Backbone.Model.extend({
+class Meal extends Backbone.Model
   idAttribute: "_id"
-});
 
-var cake = new Meal({ _id: 1, name: "Cake" });
-alert("Cake id: " + cake.id);
+cake = new Meal
+	_id: 1
+	name: "Cake"
+
+alert "Cake id: #{cake.id}"
 </pre>
     </p>
 
@@ -1142,15 +1098,13 @@ alert("Cake id: " + cake.id);
     </p>
 
 <pre class="runnable">
-var Meal = Backbone.Model.extend({
-  defaults: {
-    "appetizer":  "caesar salad",
-    "entree":     "ravioli",
-    "dessert":    "cheesecake"
-  }
-});
+class Meal extends Backbone.Model
+  defaults:
+    appetizer: "caesar salad"
+    entree: "ravioli"
+    dessert: "cheesecake"
 
-alert("Dessert will be " + (new Meal).get('dessert'));
+alert "Dessert will be #{(new Meal).get('dessert')}"
 </pre>
 
     <p class="warning">
@@ -1172,14 +1126,13 @@ alert("Dessert will be " + (new Meal).get('dessert'));
     </p>
 
 <pre class="runnable">
-var artist = new Backbone.Model({
-  firstName: "Wassily",
+artist = new Backbone.Model
+  firstName: "Wassily"
   lastName: "Kandinsky"
-});
 
-artist.set({birthday: "December 16, 1866"});
+artist.set birthday: "December 16, 1866"
 
-alert(JSON.stringify(artist));
+alert JSON.stringify(artist)
 </pre>
 
     <p id="Model-sync">
@@ -1204,10 +1157,8 @@ alert(JSON.stringify(artist));
     </p>
 
 <pre>
-// Poll every 10 seconds to keep the channel model up-to-date.
-setInterval(function() {
-  channel.fetch();
-}, 10000);
+# Poll every 10 seconds to keep the channel model up-to-date.
+setInterval (-> channel.fetch()), 10000
 </pre>
 
     <p id="Model-save">
@@ -1250,19 +1201,17 @@ setInterval(function() {
     </p>
 
 <pre class="runnable">
-Backbone.sync = function(method, model) {
-  alert(method + ": " + JSON.stringify(model));
-  model.id = 1;
-};
+Backbone.sync = (method, model) ->
+  alert "#{method}: #{JSON.stringify(model)}"
+  model.id = 1
 
-var book = new Backbone.Model({
-  title: "The Rough Riders",
+book = new Backbone.Model
+  title: "The Rough Riders"
   author: "Theodore Roosevelt"
-});
 
-book.save();
+book.save()
 
-book.save({author: "Teddy"});
+book.save author: "Teddy"
 </pre>
 
     <p>
@@ -1274,7 +1223,8 @@ book.save({author: "Teddy"});
     </p>
 
 <pre>
-book.save("author", "F.D.R.", {error: function(){ ... }});
+book.save "author", "F.D.R.",
+	error: -> &hellip;
 </pre>
 
     <p id="Model-destroy">
@@ -1296,9 +1246,8 @@ book.save("author", "F.D.R.", {error: function(){ ... }});
     </p>
 
 <pre>
-book.destroy({success: function(model, response) {
-  ...
-}});
+book.destroy
+	success: (model, response) -> &hellip;
 </pre>
 
     <p id="Model-Underscore-Methods">
@@ -1319,9 +1268,9 @@ book.destroy({success: function(model, response) {
     </ul>
 
 <pre>
-user.pick('first_name', 'last_name', 'email');
+user.pick 'first_name', 'last_name', 'email'
 
-chapters.keys().join(', ');
+chapters.keys().join(', ')
 </pre>
 
     <p id="Model-validate">
@@ -1345,26 +1294,20 @@ chapters.keys().join(', ');
     </p>
 
 <pre class="runnable">
-var Chapter = Backbone.Model.extend({
-  validate: function(attrs, options) {
-    if (attrs.end &lt; attrs.start) {
-      return "can't end before it starts";
-    }
-  }
-});
+class Chapter extends Backbone.Model
+  validate: (attrs, options) ->
+    if attrs.end &lt; attrs.start
+      return "can't end before it starts"
 
-var one = new Chapter({
+one = new Chapter
   title : "Chapter One: The Beginning"
-});
 
-one.on("invalid", function(model, error) {
-  alert(model.get("title") + " " + error);
-});
+one.on "invalid", (model, error) ->
+  alert "#{model.get("title")} #{error}"
 
-one.save({
-  start: 15,
+one.save
+  start: 15
   end:   10
-});
 </pre>
 
     <p>
@@ -1385,26 +1328,20 @@ one.save({
     </p>
 
 <pre class="runnable">
-var Chapter = Backbone.Model.extend({
-  validate: function(attrs, options) {
-    if (attrs.end &lt; attrs.start) {
-      return "can't end before it starts";
-    }
-  }
-});
+class Chapter extends Backbone.Model
+  validate: (attrs, options) ->
+    if attrs.end &lt; attrs.start
+      return "can't end before it starts"
 
-var one = new Chapter({
+one = new Chapter
   title : "Chapter One: The Beginning"
-});
 
-one.set({
-  start: 15,
+one.set
+  start: 15
   end:   10
-});
 
-if (!one.isValid()) {
-  alert(one.get("title") + " " + one.validationError);
-}
+if !one.isValid()
+  alert "#{one.get("title")} #{one.validationError}"
 </pre>
 
     <p id="Model-url">
@@ -1438,11 +1375,12 @@ if (!one.isValid()) {
     </p>
 
 <pre class="runnable">
-var Book = Backbone.Model.extend({urlRoot : '/books'});
+class Book extends Backbone.Model
+	urlRoot : '/books'
 
-var solaris = new Book({id: "1083-lem-solaris"});
+solaris = new Book id: "1083-lem-solaris"
 
-alert(solaris.url());
+alert solaris.url()
 </pre>
 
     <p id="Model-parse">
@@ -1494,11 +1432,9 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
 <pre>
-book.on("change", function() {
-  if (book.hasChanged("title")) {
-    ...
-  }
-});
+book.on "change", ->
+  if book.hasChanged "title"
+		&hellip;
 </pre>
 
     <p id="Model-changedAttributes">
@@ -1520,15 +1456,13 @@ book.on("change", function() {
     </p>
 
 <pre class="runnable">
-var bill = new Backbone.Model({
+bill = new Backbone.Model
   name: "Bill Smith"
-});
 
-bill.on("change:name", function(model, name) {
-  alert("Changed name from " + bill.previous("name") + " to " + name);
-});
+bill.on "change:name", (model, name) ->
+  alert "Changed name from #{bill.previous("name")} to #{name}"
 
-bill.set({name : "Bill Jones"});
+bill.set name: "Bill Jones"
 </pre>
 
     <p id="Model-previousAttributes">
@@ -1576,9 +1510,8 @@ bill.set({name : "Bill Jones"});
     </p>
 
 <pre>
-var Library = Backbone.Collection.extend({
+class Library extends Backbone.Collection
   model: Book
-});
 </pre>
 
     <p>
@@ -1587,17 +1520,12 @@ var Library = Backbone.Collection.extend({
     </p>
 
 <pre>
-var Library = Backbone.Collection.extend({
-
-  model: function(attrs, options) {
-    if (condition) {
-      return new PublicDocument(attrs, options);
-    } else {
-      return new PrivateDocument(attrs, options);
-    }
-  }
-
-});
+class Library extends Backbone.Collection
+  model: (attrs, options) ->
+    if condition
+      new PublicDocument attrs, options
+    else
+      new PrivateDocument attrs, options
 </pre>
 
     <p id="Collection-constructor">
@@ -1613,10 +1541,9 @@ var Library = Backbone.Collection.extend({
     </p>
 
 <pre>
-var tabs = new TabSet([tab1, tab2, tab3]);
-var spaces = new Backbone.Collection([], {
+tabs = new TabSet [tab1, tab2, tab3]
+spaces = new Backbone.Collection [],
   model: Space
-});
 </pre>
 
     <p id="Collection-models">
@@ -1639,11 +1566,11 @@ var spaces = new Backbone.Collection([], {
     </p>
 
 <pre class="runnable">
-var collection = new Backbone.Collection([
-  {name: "Tim", age: 5},
-  {name: "Ida", age: 26},
+collection = new Backbone.Collection [
+  {name: "Tim", age: 5}
+  {name: "Ida", age: 26}
   {name: "Rob", age: 55}
-]);
+]
 
 alert(JSON.stringify(collection));
 </pre>
@@ -1695,21 +1622,13 @@ alert(JSON.stringify(collection));
     </ul>
 
 <pre>
-books.each(function(book) {
-  book.publish();
-});
+books.each (book) -> book.publish()
 
-var titles = books.map(function(book) {
-  return book.get("title");
-});
+titles = books.map (book) -> book.get "title"
 
-var publishedBooks = books.filter(function(book) {
-  return book.get("published") === true;
-});
+publishedBooks = books.filter (book) -> book.get("published") == true
 
-var alphabetical = books.sortBy(function(book) {
-  return book.author.get("name").toLowerCase();
-});
+alphabetical = books.sortBy (book) -> book.author.get("name").toLowerCase()
 </pre>
 
     <p id="Collection-add">
@@ -1726,16 +1645,14 @@ var alphabetical = books.sortBy(function(book) {
     </p>
 
 <pre class="runnable">
-var ships = new Backbone.Collection;
+ships = new Backbone.Collection
 
-ships.on("add", function(ship) {
-  alert("Ahoy " + ship.get("name") + "!");
-});
+ships.on "add", (ship) ->
+	alert "Ahoy #{ship.get("name")}!"
 
-ships.add([
-  {name: "Flying Dutchman"},
+ships.add [
+  {name: "Flying Dutchman"}
   {name: "Black Pearl"}
-]);
 </pre>
 
     <p class="warning">
@@ -1794,13 +1711,13 @@ ships.add([
     </p>
 
 <pre>
-var vanHalen = new Collection([eddie, alex, stone, roth]);
+vanHalen = new Collection [eddie, alex, stone, roth]
 
-vanHalen.set([eddie, alex, stone, hagar]);
+vanHalen.set [eddie, alex, stone, hagar]
 
-// Fires a "remove" event for roth, and an "add" event for "hagar".
-// Updates any of stone, alex, and eddie's attributes that may have
-// changed over the years.
+# Fires a "remove" event for roth, and an "add" event for "hagar".
+# Updates any of stone, alex, and eddie's attributes that may have
+# changed over the years.
 </pre>
 
     <p id="Collection-get">
@@ -1811,7 +1728,7 @@ vanHalen.set([eddie, alex, stone, hagar]);
     </p>
 
 <pre>
-var book = library.get(110);
+book = library.get 110
 </pre>
 
     <p id="Collection-at">
@@ -1895,18 +1812,16 @@ var book = library.get(110);
     </p>
 
 <pre class="runnable">
-var Chapter  = Backbone.Model;
-var chapters = new Backbone.Collection;
+Chapter = Backbone.Model
+chapters = new Backbone.Collection
 
-chapters.comparator = function(chapter) {
-  return chapter.get("page");
-};
+chapters.comparator = (chapter) -> chapter.get("page")
 
-chapters.add(new Chapter({page: 9, title: "The End"}));
-chapters.add(new Chapter({page: 5, title: "The Middle"}));
-chapters.add(new Chapter({page: 1, title: "The Beginning"}));
+chapters.add new Chapter({page: 9, title: "The End"})
+chapters.add new Chapter({page: 5, title: "The Middle"})
+chapters.add new Chapter({page: 1, title: "The Beginning"})
 
-alert(chapters.pluck('title'));
+alert chapters.pluck('title')
 </pre>
 
     <p class="warning">
@@ -1933,15 +1848,15 @@ alert(chapters.pluck('title'));
     </p>
 
 <pre class="runnable">
-var stooges = new Backbone.Collection([
-  {name: "Curly"},
-  {name: "Larry"},
+stooges = new Backbone.Collection [
+  {name: "Curly"}
+  {name: "Larry"}
   {name: "Moe"}
-]);
+]
 
-var names = stooges.pluck("name");
+names = stooges.pluck "name"
 
-alert(JSON.stringify(names));
+alert JSON.stringify(names)
 </pre>
 
     <p id="Collection-where">
@@ -1952,16 +1867,16 @@ alert(JSON.stringify(names));
     </p>
 
 <pre class="runnable">
-var friends = new Backbone.Collection([
-  {name: "Athos",      job: "Musketeer"},
-  {name: "Porthos",    job: "Musketeer"},
-  {name: "Aramis",     job: "Musketeer"},
-  {name: "d'Artagnan", job: "Guard"},
-]);
+friends = new Backbone.Collection [
+  {name: "Athos",      job: "Musketeer"}
+  {name: "Porthos",    job: "Musketeer"}
+  {name: "Aramis",     job: "Musketeer"}
+  {name: "d'Artagnan", job: "Guard"}
+]
 
-var musketeers = friends.where({job: "Musketeer"});
+musketeers = friends.where {job: "Musketeer"}
 
-alert(musketeers.length);
+alert musketeers.length
 </pre>
 
     <p id="Collection-findWhere">
@@ -1980,17 +1895,13 @@ alert(musketeers.length);
     </p>
 
 <pre>
-var Notes = Backbone.Collection.extend({
+class Notes extends Backbone.Collection
   url: '/notes'
-});
 
-// Or, something more sophisticated:
+# Or, something more sophisticated:
 
-var Notes = Backbone.Collection.extend({
-  url: function() {
-    return this.document.url() + '/notes';
-  }
-});
+class Notes extends Backbone.Collection
+  url: -> @document.url() + '/notes'
 </pre>
 
     <p id="Collection-parse">
@@ -2006,12 +1917,9 @@ var Notes = Backbone.Collection.extend({
     </p>
 
 <pre>
-var Tweets = Backbone.Collection.extend({
-  // The Twitter Search API returns tweets under "results".
-  parse: function(response) {
-    return response.results;
-  }
-});
+class Tweets extends Backbone.Collection
+  # The Twitter Search API returns tweets under "results".
+  parse: (response) -> response.results
 </pre>
 
     <p id="Collection-clone">
@@ -2038,14 +1946,13 @@ var Tweets = Backbone.Collection.extend({
     </p>
 
 <pre class="runnable">
-Backbone.sync = function(method, model) {
-  alert(method + ": " + model.url);
-};
+Backbone.sync = (method, model) ->
+  alert "#{method}: #{model.url}"
 
-var accounts = new Backbone.Collection;
-accounts.url = '/accounts';
+accounts = new Backbone.Collection
+accounts.url = '/accounts'
 
-accounts.fetch();
+accounts.fetch()
 </pre>
 
     <p>
@@ -2094,16 +2001,14 @@ accounts.fetch();
     </p>
 
 <pre>
-var Library = Backbone.Collection.extend({
+class Library extends Backbone.Collection
   model: Book
-});
 
-var nypl = new Library;
+nypl = new Library
 
-var othello = nypl.create({
-  title: "Othello",
+othello = nypl.create
+  title: "Othello"
   author: "William Shakespeare"
-});
 </pre>
 
     <h2 id="Router">Backbone.Router</h2>
@@ -2136,23 +2041,15 @@ var othello = nypl.create({
     </p>
 
 <pre>
-var Workspace = Backbone.Router.extend({
-
-  routes: {
-    "help":                 "help",    // #help
-    "search/:query":        "search",  // #search/kiwis
-    "search/:query/p:page": "search"   // #search/kiwis/p7
-  },
-
-  help: function() {
-    ...
-  },
-
-  search: function(query, page) {
-    ...
-  }
-
-});
+class Workspace extends Backbone.Router
+  routes:
+    "help":                 "help",    # #help
+    "search/:query":        "search",  # #search/kiwis
+    "search/:query/p:page": "search"   # #search/kiwis/p7
+  
+	help: -> &hellip;
+  
+  search: (query, page) -> &hellip;
 </pre>
 
     <p id="Router-routes">
@@ -2202,18 +2099,15 @@ var Workspace = Backbone.Router.extend({
     </p>
 
 <pre>
-routes: {
-  "help/:page":         "help",
-  "download/*path":     "download",
-  "folder/:name":       "openFolder",
+routes:
+  "help/:page":         "help"
+  "download/*path":     "download"
+  "folder/:name":       "openFolder"
   "folder/:name-:mode": "openFolder"
-}
 </pre>
 
 <pre>
-router.on("route:help", function(page) {
-  ...
-});
+router.on"route:help", (page) -> &hellip;
 </pre>
 
     <p id="Router-constructor">
@@ -2238,17 +2132,15 @@ router.on("route:help", function(page) {
     </p>
 
 <pre>
-initialize: function(options) {
+initialize: (options) ->
 
-  // Matches #page/10, passing "10"
-  this.route("page/:number", "page", function(number){ ... });
+  # Matches #page/10, passing "10"
+  @route "page/:number", "page", (number) -> &hellip;
 
-  // Matches /117-a/b/c/open, passing "117-a/b/c" to this.open
-  this.route(/^(.*?)\/open$/, "open");
+  # Matches /117-a/b/c/open, passing "117-a/b/c" to this.open
+  @route /^(.*?)\/open$/, "open"
 
-},
-
-open: function(id) { ... }
+open: (id) -> &hellip;
 </pre>
 
     <p id="Router-navigate">
@@ -2263,18 +2155,19 @@ open: function(id) { ... }
     </p>
 
 <pre>
-openPage: function(pageNumber) {
-  this.document.pages.at(pageNumber).open();
-  this.navigate("page/" + pageNumber);
-}
+openPage: (pageNumber) ->
+  @document.pages.at(pageNumber).open()
+  @navigate "page/#{pageNumber}"
 
 # Or ...
 
-app.navigate("help/troubleshooting", {trigger: true});
+app.navigate "help/troubleshooting", trigger: true
 
 # Or ...
 
-app.navigate("help/troubleshooting", {trigger: true, replace: true});
+app.navigate "help/troubleshooting",
+	trigger: true
+	replace: true
 </pre>
 
     <h2 id="History">Backbone.history</h2>
@@ -2341,11 +2234,10 @@ app.navigate("help/troubleshooting", {trigger: true, replace: true});
     </p>
 
 <pre>
-$(function(){
-  new WorkspaceRouter();
-  new HelpPaneRouter();
-  Backbone.history.start({pushState: true});
-});
+$ ->
+  new WorkspaceRouter
+  new HelpPaneRouter
+  Backbone.history.start pushState: true
 </pre>
 
     <h2 id="Sync">Backbone.sync</h2>
@@ -2443,9 +2335,9 @@ end
     </p>
 
 <pre>
-Backbone.emulateHTTP = true;
+Backbone.emulateHTTP = true
 
-model.save();  // POST to "/collection/id", with "_method=PUT" + header.
+model.save()  # POST to "/collection/id", with "_method=PUT" + header.
 </pre>
 
     <p id="Sync-emulateJSON">
@@ -2484,27 +2376,15 @@ model.save();  // POST to "/collection/id", with "_method=PUT" + header.
     </p>
 
 <pre>
-var DocumentRow = Backbone.View.extend({
-
-  tagName: "li",
-
-  className: "document-row",
-
+class DocumentRow extends Backbone.View
+  tagName: "li"
+  className: "document-row"
   events: {
-    "click .icon":          "open",
-    "click .button.edit":   "openEditDialog",
+    "click .icon":          "open"
+    "click .button.edit":   "openEditDialog"
     "click .button.delete": "destroy"
-  },
-
-  initialize: function() {
-    this.listenTo(this.model, "change", this.render);
-  },
-
-  render: function() {
-    ...
-  }
-
-});
+  initialize: -> @listenTo @model, "change", @render
+  render: -> &hellip;
 </pre>
 
     <p>
@@ -2530,12 +2410,11 @@ var DocumentRow = Backbone.View.extend({
     </p>
 
 <pre>
-var doc = documents.first();
+doc = documents.first()
 
-new DocumentRow({
-  model: doc,
-  id: "document-row-" + doc.id
-});
+new DocumentRow
+  model: doc
+  id: "document-row-#{doc.id}"
 </pre>
 
     <p id="View-el">
@@ -2551,18 +2430,16 @@ new DocumentRow({
     </p>
 
 <pre class="runnable">
-var ItemView = Backbone.View.extend({
+class ItemView extends Backbone.View
   tagName: 'li'
-});
 
-var BodyView = Backbone.View.extend({
+class BodyView extends Backbone.View
   el: 'body'
-});
 
-var item = new ItemView();
-var body = new BodyView();
+item = new ItemView
+body = new BodyView
 
-alert(item.el + ' ' + body.el);
+alert item.el + ' ' + body.el
 </pre>
 
     <p id="View-$el">
@@ -2573,9 +2450,9 @@ alert(item.el + ' ' + body.el);
     </p>
 
 <pre>
-view.$el.show();
+view.$el.show()
 
-listView.$el.append(itemView.el);
+listView.$el.append itemView.el
 </pre>
 
     <p id="View-setElement">
@@ -2605,15 +2482,11 @@ listView.$el.append(itemView.el);
     </p>
 
 <pre>
-ui.Chapter = Backbone.View.extend({
-  serialize : function() {
-    return {
-      title: this.$(".title").text(),
-      start: this.$(".start-page").text(),
-      end:   this.$(".end-page").text()
-    };
-  }
-});
+class ui.Chapter extends Backbone.View
+  serialize: ->
+    title: this.$(".title").text()
+    start: this.$(".start-page").text()
+    end:   this.$(".end-page").text()
 </pre>
 
     <p id="View-render">
@@ -2627,13 +2500,11 @@ ui.Chapter = Backbone.View.extend({
     </p>
 
 <pre>
-var Bookmark = Backbone.View.extend({
-  template: _.template(…),
-  render: function() {
-    this.$el.html(this.template(this.model.attributes));
-    return this;
-  }
-});
+class Bookmark extends Backbone.View
+  template: _.template(&hellip;)
+  render: ->
+    @$el.html @template(@model.attributes)
+		@
 </pre>
 
     <p>
@@ -2704,33 +2575,25 @@ var Bookmark = Backbone.View.extend({
     </p>
 
 <pre>
-var DocumentView = Backbone.View.extend({
-
-  events: {
-    "dblclick"                : "open",
-    "click .icon.doc"         : "select",
-    "contextmenu .icon.doc"   : "showMenu",
-    "click .show_notes"       : "toggleNotes",
-    "click .title .lock"      : "editAccessLevel",
+class DocumentView extends Backbone.View
+  events:
+    "dblclick"                : "open"
+    "click .icon.doc"         : "select"
+    "contextmenu .icon.doc"   : "showMenu"
+    "click .show_notes"       : "toggleNotes"
+    "click .title .lock"      : "editAccessLevel"
     "mouseover .title .date"  : "showTooltip"
-  },
 
-  render: function() {
-    this.$el.html(this.template(this.model.attributes));
-    return this;
-  },
+  render: ->
+    @$el.html @template(@model.attributes)
+		@
 
-  open: function() {
-    window.open(this.model.get("viewer_url"));
-  },
+  open: ->
+    window.open @model.get("viewer_url")
 
-  select: function() {
-    this.model.set({selected: true});
-  },
-
-  ...
-
-});
+  select: -> @model.set selected: true
+	
+	&hellip;
 </pre>
 
     <p id="View-undelegateEvents">
@@ -2752,8 +2615,8 @@ var DocumentView = Backbone.View.extend({
     </p>
 
 <pre>
-var localBackbone = Backbone.noConflict();
-var model = localBackbone.Model.extend(...);
+localBackbone = Backbone.noConflict()
+model = localBackbone.Model.extend &hellip;
 </pre>
 
     <p id="Utility-Backbone-$">
@@ -2769,7 +2632,7 @@ var model = localBackbone.Model.extend(...);
     <p>
       The list of examples that follows, while long, is not exhaustive. If you've
       worked on an app that uses Backbone, please add it to the
-      <a href="https://github.com/documentcloud/backbone/wiki/Projects-and-Companies-using-Backbone">wiki page of Backbone apps</a>.
+      <a href="https://github.com/randallmorey/backbone-coffee/wiki/Projects-and-Companies-using-Backbone">wiki page of Backbone apps</a>.
     </p>
 
     <p id="examples-todos">
@@ -3727,29 +3590,25 @@ var model = localBackbone.Model.extend(...);
     </p>
 
 <pre>
-var Mailbox = Backbone.Model.extend({
+class Mailbox extends Backbone.Model
+  initialize: ->
+    @messages = new Messages
+    @messages.url = "/mailbox/#{@id}/messages"
+    @messages.on "reset", @updateCounts
+	
+	&hellip;
 
-  initialize: function() {
-    this.messages = new Messages;
-    this.messages.url = '/mailbox/' + this.id + '/messages';
-    this.messages.on("reset", this.updateCounts);
-  },
+inbox = new Mailbox
 
-  ...
+# And then, when the Inbox is opened:
 
-});
-
-var inbox = new Mailbox;
-
-// And then, when the Inbox is opened:
-
-inbox.messages.fetch({reset: true});
+inbox.messages.fetch reset: true
 </pre>
 
     <p>
       If you're looking for something more opinionated, there are a number of
       Backbone plugins that add sophisticated associations among models,
-      <a href="https://github.com/documentcloud/backbone/wiki/Extensions%2C-Plugins%2C-Resources">available on the wiki</a>.
+      <a href="https://github.com/randallmorey/backbone-coffee/wiki/Extensions%2C-Plugins%2C-Resources">available on the wiki</a>.
     </p>
 
     <p>
@@ -3887,20 +3746,16 @@ inbox.messages.fetch({reset: true});
     </p>
 
 <pre>
-var MessageList = Backbone.View.extend({
+class MessageList extends Backbone.View
+  initialize: ->
+		messages = @collection
+    messages.on "reset", @render, @
+    messages.on "add", @addMessage, @
+    messages.on "remove", @removeMessage, @
 
-  initialize: function() {
-    var messages = this.collection;
-    messages.on("reset", this.render, this);
-    messages.on("add", this.addMessage, this);
-    messages.on("remove", this.removeMessage, this);
-  }
+# Later, in the app&hellip;
 
-});
-
-// Later, in the app...
-
-Inbox.messages.add(newMessage);
+Inbox.messages.add newMessage
 </pre>
 
     <p id="FAQ-rails">
@@ -3934,7 +3789,7 @@ ActiveRecord::Base.include_root_in_json = false
 
     <h2 id="changelog">Change Log</h2>
 
-    <b class="header">1.0.0</b> &mdash; <small><i>March 20, 2013</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.9.10...1.0.0">Diff</a><br />
+    <b class="header">1.0.0</b> &mdash; <small><i>March 20, 2013</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.9.10...1.0.0">Diff</a><br />
     <ul style="margin-top: 5px;">
       <li>
         Renamed Collection's "update" to <a href="#Collection-set">set</a>, for
@@ -3968,7 +3823,7 @@ ActiveRecord::Base.include_root_in_json = false
       </li>
     </ul>
 
-    <b class="header">0.9.10</b> &mdash; <small><i>Jan. 15, 2013</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.9.9...0.9.10">Diff</a><br />
+    <b class="header">0.9.10</b> &mdash; <small><i>Jan. 15, 2013</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.9.9...0.9.10">Diff</a><br />
     <ul style="margin-top: 5px;">
       <li>
         A <tt>"route"</tt> event is triggered on the router in addition
@@ -4009,7 +3864,7 @@ ActiveRecord::Base.include_root_in_json = false
       </li>
     </ul>
 
-    <b class="header">0.9.9</b> &mdash; <small><i>Dec. 13, 2012</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.9.2...0.9.9">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.9.9/index.html">Docs</a><br />
+    <b class="header">0.9.9</b> &mdash; <small><i>Dec. 13, 2012</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.9.2...0.9.9">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.9.9/index.html">Docs</a><br />
     <ul style="margin-top: 5px;">
       <li>
         Added <a href="#Events-listenTo">listenTo</a>
@@ -4127,7 +3982,7 @@ ActiveRecord::Base.include_root_in_json = false
       </li>
     </ul>
 
-    <b class="header">0.9.2</b> &mdash; <small><i>March 21, 2012</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.9.1...0.9.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.9.2/index.html">Docs</a><br />
+    <b class="header">0.9.2</b> &mdash; <small><i>March 21, 2012</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.9.1...0.9.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.9.2/index.html">Docs</a><br />
     <ul style="margin-top: 5px;">
       <li>
         Instead of throwing an error when adding duplicate models to a collection,
@@ -4169,7 +4024,7 @@ ActiveRecord::Base.include_root_in_json = false
       </li>
     </ul>
 
-    <b class="header">0.9.1</b> &mdash; <small><i>Feb. 2, 2012</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.9.0...0.9.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.9.1/index.html">Docs</a><br />
+    <b class="header">0.9.1</b> &mdash; <small><i>Feb. 2, 2012</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.9.0...0.9.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.9.1/index.html">Docs</a><br />
     <ul style="margin-top: 5px;">
       <li>
         Reverted to 0.5.3-esque behavior for validating models. Silent changes
@@ -4187,7 +4042,7 @@ ActiveRecord::Base.include_root_in_json = false
       </li>
     </ul>
 
-    <b class="header">0.9.0</b> &mdash; <small><i>Jan. 30, 2012</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.5.3...0.9.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.9.0/index.html">Docs</a><br />
+    <b class="header">0.9.0</b> &mdash; <small><i>Jan. 30, 2012</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.5.3...0.9.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.9.0/index.html">Docs</a><br />
     <ul style="margin-top: 5px;">
       <li>
         Creating and destroying models with <tt>create</tt> and <tt>destroy</tt>
@@ -4285,7 +4140,7 @@ ActiveRecord::Base.include_root_in_json = false
     </ul>
 
     <p>
-      <b class="header">0.5.3</b> &mdash; <small><i>August 9, 2011</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.5.2...0.5.3">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.5.3/index.html">Docs</a><br />
+      <b class="header">0.5.3</b> &mdash; <small><i>August 9, 2011</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.5.2...0.5.3">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.5.3/index.html">Docs</a><br />
       A View's <tt>events</tt> property may now be defined as a function, as well
       as an object literal, making it easier to programmatically define and inherit
       events. <tt>groupBy</tt> is now proxied from Underscore as a method on Collections.
@@ -4295,7 +4150,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.5.2</b> &mdash; <small><i>July 26, 2011</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.5.1...0.5.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.5.2/index.html">Docs</a><br />
+      <b class="header">0.5.2</b> &mdash; <small><i>July 26, 2011</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.5.1...0.5.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.5.2/index.html">Docs</a><br />
       The <tt>bind</tt> function, can now take an optional third argument, to specify
       the <tt>this</tt> of the callback function.
       Multiple models with the same <tt>id</tt> are now allowed in a collection.
@@ -4306,7 +4161,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.5.1</b> &mdash; <small><i>July 5, 2011</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.5.0...0.5.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.5.1/index.html">Docs</a><br />
+      <b class="header">0.5.1</b> &mdash; <small><i>July 5, 2011</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.5.0...0.5.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.5.1/index.html">Docs</a><br />
       Cleanups from the 0.5.0 release, to wit: improved transparent upgrades from
       hash-based URLs to pushState, and vice-versa. Fixed inconsistency with
       non-modified attributes being passed to <tt>Model#initialize</tt>. Reverted
@@ -4315,9 +4170,9 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.5.0</b> &mdash; <small><i>July 1, 2011</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.3.3...0.5.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.5.0/index.html">Docs</a><br />
+      <b class="header">0.5.0</b> &mdash; <small><i>July 1, 2011</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.3.3...0.5.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.5.0/index.html">Docs</a><br />
       A large number of tiny tweaks and micro bugfixes, best viewed by looking
-      at <a href="https://github.com/documentcloud/backbone/compare/0.3.3...0.5.0">the commit diff</a>.
+      at <a href="https://github.com/randallmorey/backbone-coffee/compare/0.3.3...0.5.0">the commit diff</a>.
       HTML5 <tt>pushState</tt> support, enabled by opting-in with:
       <tt>Backbone.history.start({pushState: true})</tt>.
       <tt>Controller</tt> was renamed to <tt>Router</tt>, for clarity.
@@ -4339,7 +4194,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.3.3</b> &mdash; <small><i>Dec 1, 2010</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.3.2...0.3.3">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.3.3/index.html">Docs</a><br />
+      <b class="header">0.3.3</b> &mdash; <small><i>Dec 1, 2010</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.3.2...0.3.3">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.3.3/index.html">Docs</a><br />
       Backbone.js now supports <a href="http://zeptojs.com">Zepto</a>, alongside
       jQuery, as a framework for DOM manipulation and Ajax support.
       Implemented <a href="#Model-escape">Model#escape</a>, to efficiently handle
@@ -4350,7 +4205,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.3.2</b> &mdash; <small><i>Nov 23, 2010</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.3.1...0.3.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.3.2/index.html">Docs</a><br />
+      <b class="header">0.3.2</b> &mdash; <small><i>Nov 23, 2010</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.3.1...0.3.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.3.2/index.html">Docs</a><br />
       Bugfix for IE7 + iframe-based "hashchange" events. <tt>sync</tt> may now be
       overridden on a per-model, or per-collection basis. Fixed recursion error
       when calling <tt>save</tt> with no changed attributes, within a
@@ -4358,7 +4213,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.3.1</b> &mdash; <small><i>Nov 15, 2010</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.3.0...0.3.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.3.1/index.html">Docs</a><br />
+      <b class="header">0.3.1</b> &mdash; <small><i>Nov 15, 2010</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.3.0...0.3.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.3.1/index.html">Docs</a><br />
       All <tt>"add"</tt> and <tt>"remove"</tt> events are now sent through the
       model, so that views can listen for them without having to know about the
       collection. Added a <tt>remove</tt> method to <a href="#View">Backbone.View</a>.
@@ -4367,7 +4222,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.3.0</b> &mdash; <small><i>Nov 9, 2010</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.2.0...0.3.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.3.0/index.html">Docs</a><br />
+      <b class="header">0.3.0</b> &mdash; <small><i>Nov 9, 2010</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.2.0...0.3.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.3.0/index.html">Docs</a><br />
       Backbone now has <a href="#Controller">Controllers</a> and
       <a href="#History">History</a>, for doing client-side routing based on
       URL fragments.
@@ -4381,7 +4236,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.2.0</b> &mdash; <small><i>Oct 25, 2010</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.1.2...0.2.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.2.0/index.html">Docs</a><br />
+      <b class="header">0.2.0</b> &mdash; <small><i>Oct 25, 2010</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.1.2...0.2.0">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.2.0/index.html">Docs</a><br />
       Instead of requiring server responses to be namespaced under a <tt>model</tt>
       key, now you can define your own <a href="#Model-parse">parse</a> method
       to convert responses into attributes for Models and Collections.
@@ -4393,7 +4248,7 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.1.2</b> &mdash; <small><i>Oct 19, 2010</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.1.1...0.1.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.1.2/index.html">Docs</a><br />
+      <b class="header">0.1.2</b> &mdash; <small><i>Oct 19, 2010</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.1.1...0.1.2">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.1.2/index.html">Docs</a><br />
       Added a <a href="#Model-fetch">Model#fetch</a> method for refreshing the
       attributes of single model from the server.
       An <tt>error</tt> callback may now be passed to <tt>set</tt> and <tt>save</tt>
@@ -4407,13 +4262,13 @@ ActiveRecord::Base.include_root_in_json = false
     </p>
 
     <p>
-      <b class="header">0.1.1</b> &mdash; <small><i>Oct 14, 2010</i></small> &mdash; <a href="https://github.com/documentcloud/backbone/compare/0.1.0...0.1.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.1.1/index.html">Docs</a><br />
+      <b class="header">0.1.1</b> &mdash; <small><i>Oct 14, 2010</i></small> &mdash; <a href="https://github.com/randallmorey/backbone-coffee/compare/0.1.0...0.1.1">Diff</a> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.1.1/index.html">Docs</a><br />
       Added a convention for <tt>initialize</tt> functions to be called
       upon instance construction, if defined. Documentation tweaks.
     </p>
 
     <p>
-      <b class="header">0.1.0</b> &mdash; <small><i>Oct 13, 2010</i></small> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/documentcloud/backbone/0.1.0/index.html">Docs</a><br />
+      <b class="header">0.1.0</b> &mdash; <small><i>Oct 13, 2010</i></small> &mdash; <a href="http://htmlpreview.github.com/?https://raw.github.com/randallmorey/backbone-coffee/0.1.0/index.html">Docs</a><br />
       Initial Backbone release.
     </p>
 
@@ -4432,19 +4287,6 @@ ActiveRecord::Base.include_root_in_json = false
   <script src="test/vendor/json2.js"></script>
   <script src="backbone.js"></script>
 
-  <script>
-    // Set up the "play" buttons for each runnable code example.
-    $(function() {
-      $('.runnable').each(function() {
-        var code = this;
-        var button = '<div class="run" title="Run"></div>';
-        $(button).insertBefore(code).bind('click', function(){
-          eval($(code).text());
-        });
-      });
-      $('[data-original]').lazyload();
-    });
-  </script>
 
 </body>
 </html>
