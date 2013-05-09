@@ -1,12 +1,12 @@
-###*
-  Backbone.History
-  ----------------
+###
+Backbone.History
+----------------
 
-  Handles cross-browser history management, based on either
-  [pushState](http:#diveintohtml5.info/history.html) and real URLs, or
-  [onhashchange](https:#developer.mozilla.org/en-US/docs/DOM/window.onhashchange)
-  and URL fragments. If the browser supports neither (old IE, natch),
-  falls back to polling.
+Handles cross-browser history management, based on either
+[pushState](http:#diveintohtml5.info/history.html) and real URLs, or
+[onhashchange](https:#developer.mozilla.org/en-US/docs/DOM/window.onhashchange)
+and URL fragments. If the browser supports neither (old IE, natch),
+falls back to polling.
 ###
 
 # Cached regex for stripping a leading hash/slash and trailing space.
@@ -42,14 +42,14 @@ class Backbone.History
   # Gets the true hash value. Cannot use location.hash directly due to bug
   # in Firefox where location.hash will always be decoded.
   getHash: (window) ->
-    match = (window or this).location.href.match /#(.*)$/
+    match = (window or @).location.href.match /#(.*)$/
     if match then match[1] else ''
 
   # Get the cross-browser normalized URL fragment, either from the URL,
   # the hash, or the override.
   getFragment: (fragment, forcePushState) ->
     unless fragment?
-      if @_hasPushState or !@_wantsHashChange or forcePushState
+      if @_hasPushState or not @_wantsHashChange or forcePushState
         fragment = @location.pathname
         root = @root.replace trailingSlash, ''
         fragment = fragment.substr root.length unless fragment.indexOf root
@@ -60,7 +60,8 @@ class Backbone.History
   # Start the hash change handling, returning `true` if the current URL matches
   # an existing route, and `false` otherwise.
   start: (options) ->
-    throw new Error("Backbone.history has already been started") if History.started
+    if History.started
+      throw new Error 'Backbone.history has already been started'
     History.started = true
 
     # Figure out the initial configuration. Do we need an iframe?
@@ -72,20 +73,25 @@ class Backbone.History
     @_hasPushState = !!(@options.pushState and @history and @history.pushState)
     fragment = @getFragment()
     docMode = document.documentMode
-    oldIE = (isExplorer.exec(navigator.userAgent.toLowerCase()) and (!docMode or docMode <= 7))
+    oldIE = isExplorer.exec(navigator.userAgent.toLowerCase()) and
+    (not docMode or docMode <= 7)
 
     # Normalize root to always include a leading and trailing slash.
     @root = "/#{@root}/".replace rootStripper, '/'
 
     if oldIE and @_wantsHashChange
-      @iframe = Backbone.$('<iframe src="javascript:0" tabindex="-1" />').hide().appendTo('body')[0].contentWindow
+      @iframe = Backbone
+      .$('<iframe src="javascript:0" tabindex="-1" />')
+      .hide()
+      .appendTo('body')[0]
+      .contentWindow
       @navigate fragment
 
     # Depending on whether we're using pushState or hashes, and whether
     # 'onhashchange' is supported, determine how we check the URL state.
     if @_hasPushState
       Backbone.$(window).on 'popstate', @checkUrl
-    else if @_wantsHashChange and ('onhashchange' in window) and !oldIE
+    else if @_wantsHashChange and ('onhashchange' in window) and not oldIE
       Backbone.$(window).on 'hashchange', @checkUrl
     else if @_wantsHashChange
       @_checkUrlInterval = setInterval @checkUrl, @interval
@@ -94,11 +100,12 @@ class Backbone.History
     # opened by a non-pushState browser.
     @fragment = fragment
     loc = @location
-    atRoot = loc.pathname.replace(/[^\/]$/, '$&/') == @root
+    atRoot = loc.pathname.replace(/[^\/]$/, '$&/') is @root
 
     # If we've started off with a route from a `pushState`-enabled browser,
     # but we're currently in a browser that doesn't support it...
-    if @_wantsHashChange and @_wantsPushState and !@_hasPushState and !atRoot
+    if @_wantsHashChange and @_wantsPushState and not
+    @_hasPushState and not atRoot
       @fragment = @getFragment null, true
       @location.replace @root + @location.search + '#' + @fragment
       # Return immediately as browser will do redirect to new url
@@ -120,15 +127,16 @@ class Backbone.History
 
   # Add a route to be tested when the fragment changes. Routes added later
   # may override previous routes.
-  route: (route, callback) -> @handlers.unshift({route: route, callback: callback})
+  route: (route, callback) ->
+    @handlers.unshift(route: route, callback: callback)
 
   # Checks the current URL to see if it has changed, and if it has,
   # calls `loadUrl`, normalizing across the hidden iframe.
   checkUrl: (e) ->
     current = @getFragment()
-    if current == @fragment and @iframe
+    if current is @fragment and @iframe
       current = @getFragment @getHash(@iframe)
-    return false if current == @fragment
+    return false if current is @fragment
     @navigate(current) if @iframe
     @loadUrl() or @loadUrl @getHash()
   
@@ -152,16 +160,17 @@ class Backbone.History
   # route callback be fired (not usually desirable), or `replace: true`, if
   # you wish to modify the current URL without adding an entry to the history.
   navigate: (fragment, options) ->
-    return false if !History.started
-    options = trigger: options if !options or options == true
+    return false unless History.started
+    options = trigger: options if not options or options is true
     fragment = @getFragment fragment or ''
-    return if @fragment == fragment
+    return if @fragment is fragment
     @fragment = fragment
     url = @root + fragment
 
     # If pushState is available, we use it to set the fragment as a real URL.
     if @_hasPushState
-      @history[if options.replace then 'replaceState' else 'pushState'] {}, document.title, url
+      method = if options.replace then 'replaceState' else 'pushState'
+      @history[method] {}, document.title, url
     # If hash changes haven't been explicitly disabled, update the hash
     # fragment to store history.
     else if @_wantsHashChange

@@ -1,17 +1,27 @@
-###*
-  Backbone.Model
-  --------------
+###
+Backbone.Model
+--------------
 
-  Backbone **Models** are the basic data object in the framework --
-  frequently representing a row in a table in a database on your server.
-  A discrete chunk of data and a bunch of useful, related methods for
-  performing computations and transformations on that data.
+Backbone **Models** are the basic data object in the framework --
+frequently representing a row in a table in a database on your server.
+A discrete chunk of data and a bunch of useful, related methods for
+performing computations and transformations on that data.
 
-  Create a new model with the specified attributes. A client id (`cid`)
-  is automatically generated and assigned for you.
+Create a new model with the specified attributes. A client id (`cid`)
+is automatically generated and assigned for you.
 ###
 class Backbone.Model
   _.extend @::, Events
+  
+  # A hash of attributes whose current and previous value differ.
+  changed: null
+  
+  # The value returned during the last failed validation.
+  validationError: null
+  
+  # The default name for the JSON `id` attribute is `"id"`. MongoDB and
+  # CouchDB users may want to set this to `"_id"`.
+  idAttribute: 'id'
   
   constructor: (attributes, options = {}) ->
     attrs = attributes or {}
@@ -20,34 +30,34 @@ class Backbone.Model
     @collection = options.collection if options.collection
     attrs = @parse(attrs, options) or {} if options.parse
     options._attrs = attrs
-    defaults = _.result this, 'defaults'
+    defaults = _.result @, 'defaults'
     attrs = _.defaults {}, attrs, defaults if defaults
     @set attrs, options
     @changed = {}
     @initialize arguments...
-  # A hash of attributes whose current and previous value differ.
-  changed: null
-  # The value returned during the last failed validation.
-  validationError: null
-  # The default name for the JSON `id` attribute is `"id"`. MongoDB and
-  # CouchDB users may want to set this to `"_id"`.
-  idAttribute: 'id'
+  
   # Initialize is an empty function by default. Override it with your own
   # initialization logic.
   initialize: ->
     # pass
+  
   # Return a copy of the model's `attributes` object.
   toJSON: (options) -> _.clone @attributes
+  
   # Proxy `Backbone.sync` by default -- but override this if you need
   # custom syncing semantics for *this* particular model.
-  sync: -> Backbone.sync.apply this, arguments
+  sync: -> Backbone.sync.apply @, arguments
+  
   # Get the value of an attribute.
   get: (attr) -> @attributes[attr]
+  
   # Get the HTML-escaped value of an attribute.
   escape: (attr) -> _.escape @get(attr)
-  # Returns `true` if the attribute contains a value that is not null
+  
+  # Returns `true` if the attribute contains a value that != null
   # or undefined.
   has: (attr) -> @get(attr)?
+  
   # Set a hash of model attributes on the object, firing `"change"`. This is
   # the core primitive operation of a model, updating the data and notifying
   # anyone who needs to know about the change in state. The heart of the beast.
@@ -85,7 +95,7 @@ class Backbone.Model
     # For each `set` attribute, update or delete the current value.
     for attr, v of attrs
       val = attrs[attr]
-      changes.push(attr) if !_.isEqual current[attr], val
+      changes.push(attr) unless _.isEqual current[attr], val
       unless _.isEqual prev[attr], val
         @changed[attr] = val
       else
@@ -96,7 +106,7 @@ class Backbone.Model
         current[attr] = val
 
     # Trigger all relevant attribute changes.
-    if !silent
+    unless silent
       @_pending = true if changes.length
       for change in changes
         @trigger 'change:' + change, @, current[change], options
@@ -112,20 +122,25 @@ class Backbone.Model
     @_pending = false
     @_changing = false
     @
+  
   # Remove an attribute from the model, firing `"change"`. `unset` is a noop
   # if the attribute doesn't exist.
-  unset: (attr, options) -> @set attr, undefined, _.extend({}, options, unset: true)
+  unset: (attr, options) ->
+    @set attr, undefined, _.extend({}, options, unset: true)
+  
   # Clear all attributes on the model, firing `"change"`.
   clear: (options) ->
     attrs = {}
     for key, v of @attributes
       attrs[key] = undefined
     @set attrs, _.extend({}, options, unset: true)
+  
   # Determine if the model has changed since the last `"change"` event.
   # If you specify an attribute name, determine if that attribute has changed.
   hasChanged: (attr) ->
-    return !_.isEmpty @changed unless attr?
+    return not _.isEmpty @changed unless attr?
     return _.has @changed, attr
+  
   # Return an object containing all the attributes that have changed, or
   # false if there are no changed attributes. Useful for determining what
   # parts of a view need to be updated and/or what attributes need to be
@@ -142,14 +157,17 @@ class Backbone.Model
       changed = {} unless changed
       changed[attr] = v
     return changed
+  
   # Get the previous value of an attribute, recorded at the time the last
   # `"change"` event was fired.
   previous: (attr) ->
-    return null if !attr? or !@_previousAttributes
+    return null if not attr? or not @_previousAttributes
     return @_previousAttributes[attr]
+  
   # Get all of the attributes of the model at the time of the previous
   # `"change"` event.
   previousAttributes: -> _.clone @_previousAttributes
+  
   # Fetch the model from the server. If the server's representation of the
   # model differs from its current attributes, they will be overridden,
   # triggering a `"change"` event.
@@ -159,11 +177,12 @@ class Backbone.Model
     model = @
     success = options.success
     options.success = (resp) ->
-      return false if !model.set model.parse(resp, options), options
+      return false unless model.set model.parse(resp, options), options
       success(model, resp, options) if success
       model.trigger 'sync', model, resp, options
     wrapError this, options
     @sync 'read', this, options
+  
   # Set a hash of model attributes, and sync the model to the server.
   # If the server returns an attributes hash that differs, the model's
   # state will be `set` again.
@@ -171,7 +190,7 @@ class Backbone.Model
     attributes = @attributes
 
     # Handle both `"key", value` and `{key: value}` -style arguments.
-    if !key? or _.isObject key
+    if not key? or _.isObject key
       attrs = key
       options = val
     else
@@ -183,7 +202,7 @@ class Backbone.Model
     # If we're not waiting and attributes exist, save acts as
     # `set(attr).save(null, opts)` with validation. Otherwise, check if
     # the model will be valid when the attributes, if any, are set.
-    if attrs and !options.wait
+    if attrs and not options.wait
       return false unless @set attrs, options
     else
       return false unless @_validate attrs, options
@@ -194,7 +213,7 @@ class Backbone.Model
 
     # After a successful server-side save, the client is (optionally)
     # updated with the server-side state.
-    options.parse = true if !options.parse?
+    options.parse = true unless options.parse?
     model = @
     success = options.success
     options.success = (resp) ->
@@ -202,19 +221,23 @@ class Backbone.Model
       model.attributes = attributes
       serverAttrs = model.parse resp, options
       serverAttrs = _.extend(attrs or {}, serverAttrs) if options.wait
-      return false if _.isObject(serverAttrs) and !model.set(serverAttrs, options)
+      if _.isObject(serverAttrs) and not model.set serverAttrs, options
+        return false
       success model, resp, options if success
       model.trigger 'sync', model, resp, options
     wrapError @, options
 
-    method = if @isNew() then 'create' else (if options.patch then 'patch' else 'update')
-    options.attrs = attrs if method == 'patch'
+    if @isNew()
+      method = 'create'
+    else
+      method = (if options.patch then 'patch' else 'update')
+    options.attrs = attrs if method is 'patch'
     xhr = @sync method, @, options
 
     # Restore attributes.
     @attributes = attributes if attrs and options.wait
 
-    return xhr
+    xhr
 
   # Destroy this model on the server if it was already persisted.
   # Optimistically removes the model from its collection, if it has one.
@@ -230,7 +253,7 @@ class Backbone.Model
     options.success = (resp) ->
       destroy() if options.wait or model.isNew()
       success(model, resp, options) if success
-      model.trigger('sync', model, resp, options) if !model.isNew()
+      model.trigger('sync', model, resp, options) unless model.isNew()
 
     if @isNew()
       options.success()
@@ -238,8 +261,8 @@ class Backbone.Model
     wrapError @, options
 
     xhr = @sync 'delete', @, options
-    destroy() if !options.wait
-    return xhr
+    destroy() unless options.wait
+    xhr
 
   # Default URL for the model's representation on the server -- if you're
   # using Backbone's restful methods, override this to change the endpoint
@@ -247,7 +270,8 @@ class Backbone.Model
   url: ->
     base = _.result(@, 'urlRoot') or _.result(@collection, 'url') or urlError()
     return base if @isNew()
-    base + (if base.charAt(base.length - 1) == '/' then '' else '/') + encodeURIComponent @id
+    base + (if base.charAt(base.length - 1) is '/' then '' else '/') +
+    encodeURIComponent @id
 
   # **parse** converts a response into the hash of attributes to be `set` on
   # the model. The default implementation is just to pass the response along.
@@ -257,7 +281,7 @@ class Backbone.Model
   clone: -> new @constructor @attributes
 
   # A model is new if it has never been saved to the server, and lacks an id.
-  isNew: -> !@id?
+  isNew: -> not @id?
 
   # Check if the model is currently in a valid state.
   isValid: (options) -> @_validate {}, _.extend(options or {}, validate: true)
@@ -265,12 +289,15 @@ class Backbone.Model
   # Run validation against the next complete set of model attributes,
   # returning `true` if all is well. Otherwise, fire an `"invalid"` event.
   _validate: (attrs, options = {}) ->
-    return true if !options.validate or !@validate
+    return true if not options.validate or not @validate
     attrs = _.extend {}, @attributes, attrs
     @validationError = @validate(attrs, options) or null
     error = @validationError
-    return true if !error
-    @trigger 'invalid', @, error, _.extend(options or {}, validationError: error)
+    return true unless error
+    @trigger 'invalid',
+      @,
+      error,
+      _.extend(options or {}, validationError: error)
     false
 
 Model = Backbone.Model

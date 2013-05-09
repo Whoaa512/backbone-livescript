@@ -1,11 +1,14 @@
 ###
-  Backbone.js 1.0.0
+Backbone.js 1.0.0
 
-  (c) 2010-2011 Jeremy Ashkenas, DocumentCloud Inc.
-  (c) 2011-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-  Backbone may be freely distributed under the MIT license.
-  For all details and documentation:
-  http://www.backbonecoffee.org
+(c) 2010-2011 Jeremy Ashkenas, DocumentCloud Inc.
+(c) 2011-2013 Jeremy Ashkenas, DocumentCloud and
+Investigative Reporters & Editors
+
+Backbone may be freely distributed under the MIT license.
+
+For all details and documentation:
+http://www.backbonecoffee.org
 ###
 
 
@@ -35,7 +38,7 @@ else
 
 # Require Underscore, if we're on the server, and it's not already present.
 _ = root._
-_ = require 'underscore' if !_? and require?
+_ = require 'underscore' if not _? and require?
 
 # Map from CRUD to HTTP for our default `Backbone.sync` implementation.
 methodMap =
@@ -100,11 +103,11 @@ _.extend Backbone,
       dataType: 'json'
 
     # Ensure that we have a URL.
-    if !options.url
-      params.url = _.result(model, 'url') or urlError()
+    params.url = _.result(model, 'url') or urlError() unless options.url
 
     # Ensure that we have the appropriate request data.
-    if !options.data? and model and (method == 'create' or method == 'update' or method == 'patch')
+    if not options.data? and model and
+    (method is 'create' or method is 'update' or method is 'patch')
       params.contentType = 'application/json'
       params.data = JSON.stringify(options.attrs or model.toJSON options)
 
@@ -113,23 +116,26 @@ _.extend Backbone,
       params.contentType = 'application/x-www-form-urlencoded'
       params.data = if params.data then model: params.data else {}
 
-    # For older servers, emulate HTTP by mimicking the HTTP method with `_method`
-    # And an `X-HTTP-Method-Override` header.
-    if options.emulateHTTP and (type == 'PUT' or type == 'DELETE' or type == 'PATCH')
+    # For older servers, emulate HTTP by mimicking the HTTP method with
+    # `_method` and an `X-HTTP-Method-Override` header.
+    if options.emulateHTTP and
+    (type is 'PUT' or type is 'DELETE' or type is 'PATCH')
       params.type = 'POST'
       params.data._method = type if options.emulateJSON
       beforeSend = options.beforeSend
       options.beforeSend = (xhr) ->
         xhr.setRequestHeader 'X-HTTP-Method-Override', type
-        return beforeSend.apply(this, arguments) if beforeSend
+        beforeSend.apply @, arguments if beforeSend
 
     # Don't process data on a non-GET request.
-    params.processData = false if params.type != 'GET' and !options.emulateJSON
+    if params.type != 'GET' and not options.emulateJSON
+      params.processData = false
 
     # If we're sending a `PATCH` request, and we're in an old Internet Explorer
     # that still has ActiveX enabled by default, override jQuery to use that
     # for XHR instead. Remove this line when jQuery supports `PATCH` on IE8.
-    if params.type == 'PATCH' and window.ActiveXObject and !(window.external and window.external.msActiveXFilteringEnabled)
+    if params.type is 'PATCH' and window.ActiveXObject and not
+    (window.external and window.external.msActiveXFilteringEnabled)
       params.xhr = -> new ActiveXObject 'Microsoft.XMLHTTP'
 
     # Make the request, allowing the user to override any Ajax options.

@@ -1,17 +1,17 @@
-###*
-  Backbone.Collection
-  -------------------
+###
+Backbone.Collection
+-------------------
 
-  If models tend to represent a single row of data, a Backbone Collection is
-  more analagous to a table full of data ... or a small slice or page of that
-  table, or a collection of rows that belong together for a particular reason
-  -- all of the messages in this particular folder, all of the documents
-  belonging to this particular author, and so on. Collections maintain
-  indexes of their models, both in order, and for lookup by `id`.
+If models tend to represent a single row of data, a Backbone Collection is
+more analagous to a table full of data ... or a small slice or page of that
+table, or a collection of rows that belong together for a particular reason
+-- all of the messages in this particular folder, all of the documents
+belonging to this particular author, and so on. Collections maintain
+indexes of their models, both in order, and for lookup by `id`.
 
-  Create a new **Collection**, perhaps to contain a specific type of `model`.
-  If a `comparator` is specified, the Collection will maintain
-  its models in sort order, as they're added and removed.
+Create a new **Collection**, perhaps to contain a specific type of `model`.
+If a `comparator` is specified, the Collection will maintain
+its models in sort order, as they're added and removed.
 ###
 
 # Default options for `Collection#set`.
@@ -34,7 +34,7 @@ class Backbone.Collection
   constructor: (models, options) ->
     options or= {}
     @model = options.model if options.model
-    @comparator = options.comparator if not _.isUndefined options.comparator
+    @comparator = options.comparator unless _.isUndefined options.comparator
     @_reset()
     @initialize arguments...
     @reset models, _.extend({silent: true}, options) if models
@@ -69,7 +69,7 @@ class Backbone.Collection
         options.index = index
         model.trigger 'remove', model, @, options
       @_removeReference model
-    this
+    @
 
   # Update a collection by `set`-ing a new list of models, adding new ones,
   # removing models that are no longer present, and merging models that
@@ -81,7 +81,7 @@ class Backbone.Collection
     unless _.isArray models
       models = if models then [models] else []
     at = options.at
-    sortable = @comparator and !at? and options.sort != false
+    sortable = @comparator and not at? and options.sort != false
     sortAttr = if _.isString @comparator then @comparator else null
     toAdd = []
     toRemove = []
@@ -104,9 +104,9 @@ class Backbone.Collection
       if existing
         modelMap[existing.cid] = true if remove
         if merge
-          attrs = if attrs == model then model.attributes else options._attrs
+          attrs = if attrs is model then model.attributes else options._attrs
           existing.set attrs, options
-          sort = true if sortable and !sort and existing.hasChanged sortAttr
+          sort = true if sortable and not sort and existing.hasChanged sortAttr
       # This is a new model, push it to the `toAdd` list.
       else if add
         toAdd.push model
@@ -142,11 +142,11 @@ class Backbone.Collection
 
     # Trigger `add` events.
     for model in toAdd
-      model.trigger 'add', model, this, options
+      model.trigger 'add', model, @, options
 
     # Trigger `sort` if the collection was sorted.
-    @trigger 'sort', this, options if sort or (order and order.length)
-    this
+    @trigger 'sort', @, options if sort or (order and order.length)
+    @
     
   # When you have more items than you want to add or remove individually,
   # you can reset the entire set with a new list of models, without firing
@@ -157,13 +157,13 @@ class Backbone.Collection
     options.previousModels = @models
     @_reset()
     @add models, _.extend({silent: true}, options)
-    @trigger 'reset', @, options if !options.silent
+    @trigger 'reset', @, options unless options.silent
     @
 
   # Add a model to the end of the collection.
   push: (model, options) ->
     model = @_prepareModel model, options
-    @add model, _.extend({at: this.length}, options)
+    @add model, _.extend({at: @length}, options)
     model
 
   # Remove a model from the end of the collection.
@@ -189,7 +189,7 @@ class Backbone.Collection
   
   # Get a model from the set by id.
   get: (obj) ->
-    return undefined if !obj?
+    return undefined unless obj?
     @_byId[obj.id ? (obj.cid or obj)]
 
   # Get the model at the given index.
@@ -215,12 +215,12 @@ class Backbone.Collection
   sort: (options = {}) ->
     throw new Error('Cannot sort a set without a comparator') unless @comparator
     # Run sort based on type of `comparator`.
-    if _.isString(@comparator) or @comparator.length == 1
+    if _.isString(@comparator) or @comparator.length is 1
       @models = @sortBy @comparator, @
     else
       @models.sort _.bind(@comparator, @)
-    @trigger 'sort', this, options if !options.silent
-    this
+    @trigger 'sort', @, options unless options.silent
+    @
   
   # Figure out the smallest index at which a model should be inserted so as
   # to maintain order.
@@ -237,7 +237,7 @@ class Backbone.Collection
   # data will be passed through the `reset` method instead of `set`.
   fetch: (options = {}) ->
     options = _.clone options
-    options.parse = true if !options.parse?
+    options.parse = true unless options.parse?
     success = options.success
     collection = @
     options.success = (resp) ->
@@ -282,28 +282,28 @@ class Backbone.Collection
   # collection.
   _prepareModel: (attrs, options = {}) ->
     if attrs instanceof Model
-      attrs.collection = this unless attrs.collection
+      attrs.collection = @ unless attrs.collection
       return attrs
-    options.collection = this
+    options.collection = @
     model = new @model attrs, options
     unless model._validate attrs, options
-      @trigger 'invalid', this, attrs, options
+      @trigger 'invalid', @, attrs, options
       return false
     model
     
   # Internal method to sever a model's ties to a collection.
   _removeReference: (model) ->
-    delete model.collection if this == model.collection
-    model.off 'all', @_onModelEvent, this
+    delete model.collection if @ is model.collection
+    model.off 'all', @_onModelEvent, @
 
   # Internal method called every time a model in the set fires an event.
   # Sets need to update their indexes when models change ids. All other
   # events simply proxy through. "add" and "remove" events that originate
   # in other collections are ignored.
   _onModelEvent: (event, model, collection, options) ->
-    return if (event == 'add' or event == 'remove') and collection != @
-    @remove model, options if event == 'destroy'
-    if model and event == "change:#{model.idAttribute}"
+    return if (event is 'add' or event is 'remove') and collection != @
+    @remove model, options if event is 'destroy'
+    if model and event is "change:#{model.idAttribute}"
       delete @_byId[model.previous model.idAttribute]
       @_byId[model.id] = model if model.id?
     @trigger.apply @, arguments
@@ -335,5 +335,5 @@ attributeMethods = ['groupBy', 'countBy', 'sortBy']
 # Use attributes instead of properties.
 _.each attributeMethods, (method) ->
   Collection::[method] = (value, context) ->
-    iterator = if _.isFunction(value) then value else ((model) -> model.get value)
+    iterator = if _.isFunction(value) then value else (model) -> model.get value
     _[method] @models, iterator, context
