@@ -1,9 +1,9 @@
-###*
-  Backbone.Router
-  ---------------
+###
+Backbone.Router
+---------------
 
-  Routers map faux-URLs to actions, and fire events when routes are
-  matched. Creating a new one sets its `routes` hash, if not set statically.
+Routers map faux-URLs to actions, and fire events when routes are
+matched. Creating a new one sets its `routes` hash, if not set statically.
 ###
 
 # Cached regular expressions for matching named param parts and splatted
@@ -33,11 +33,11 @@ class Backbone.Router
   #     });
   #
   route: (route, name, callback) ->
-    route = @_routeToRegExp(route) if !_.isRegExp(route)
+    route = @_routeToRegExp(route) unless _.isRegExp route
     if _.isFunction name
       callback = name
       name = ''
-    callback = @[name] if !callback
+    callback = @[name] unless callback
     router = @
     Backbone.history.route route, (fragment) ->
       args = router._extractParameters route, fragment
@@ -45,18 +45,18 @@ class Backbone.Router
       router.trigger.apply router, ['route:' + name].concat(args)
       router.trigger 'route', name, args
       Backbone.history.trigger 'route', router, name, args
-    this
+    @
 
   # Simple proxy to `Backbone.history` to save a fragment into the history.
   navigate: (fragment, options) ->
     Backbone.history.navigate fragment, options
-    this
+    @
 
   # Bind all defined routes to `Backbone.history`. We have to reverse the
   # order of the routes here to support behavior where the most general
   # routes can be defined at the bottom of the route map.
   _bindRoutes: ->
-    return if !@routes
+    return unless @routes
     @routes = _.result @, 'routes'
     routes = _.keys @routes
     route = routes.pop()
@@ -70,7 +70,8 @@ class Backbone.Router
     route = route
       .replace(escapeRegExp, '\\$&')
       .replace(optionalParam, '(?:$1)?')
-      .replace(namedParam, (match, optional) -> if optional then match else '([^\/]+)')
+      .replace(namedParam,
+      (match, optional) -> if optional then match else '([^\/]+)')
       .replace(splatParam, '(.*?)')
     new RegExp "^#{route}$"
 

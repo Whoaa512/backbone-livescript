@@ -1,38 +1,39 @@
-###*
-  Backbone.Events
-  ---------------
+###
+Backbone.Events
+---------------
 
-  A module that can be mixed in to *any object* in order to provide it with
-  custom events. You may bind with `on` or remove with `off` callback
-  functions to an event; `trigger`-ing an event fires all callbacks in
-  succession.
+A module that can be mixed in to *any object* in order to provide it with
+custom events. You may bind with `on` or remove with `off` callback
+functions to an event; `trigger`-ing an event fires all callbacks in
+succession.
 
-      var object = {};
-      _.extend(object, Backbone.Events);
-      object.on('expand', function(){ alert('expanded'); });
-      object.trigger('expand');
+    var object = {};
+    _.extend(object, Backbone.Events);
+    object.on('expand', function(){ alert('expanded'); });
+    object.trigger('expand');
 ###
 class Backbone.Events
   # Bind an event to a `callback` function. Passing `"all"` will bind
   # the callback to all events fired.
   @on: (name, callback, context) ->
-    return this unless eventsApi(this, 'on', name, [callback, context]) and callback
+    return @ unless eventsApi(@, 'on', name, [callback, context]) and callback
     @_events ?= {}
     @_events[name] ?= []
     events = @_events[name]
     events.push
       callback: callback
       context: context
-      ctx: context or this
-    this
+      ctx: context or @
+    @
   # Bind an event to only be triggered a single time. After the first time
   # the callback is invoked, it will be removed.
   @once: (name, callback, context) ->
-    return this if !eventsApi(@, 'once', name, [callback, context]) or !callback
-    self = this
+    if not eventsApi(@, 'once', name, [callback, context]) or not callback
+      return @
+    self = @
     once = _.once ->
       self.off name, once
-      callback.apply this, arguments
+      callback.apply @, arguments
     once._callback = callback
     @on name, once, context
   # Remove one or many callbacks. If `context` is null, removes all
@@ -40,8 +41,9 @@ class Backbone.Events
   # callbacks for the event. If `name` is null, removes all bound
   # callbacks for all events.
   @off: (name, callback, context) ->
-    return this if !@_events or !eventsApi this, 'off', name, [callback, context]
-    if !name and !callback and !context
+    if not @_events or not eventsApi @, 'off', name, [callback, context]
+      return @
+    if not name and not callback and not context
       @_events = {}
       return @
     names = if name then [name] else _.keys @_events
@@ -52,10 +54,11 @@ class Backbone.Events
         @_events[name] = retain
         if callback or context
           for ev in events
-            if (callback and callback != ev.callback and callback != ev.callback._callback) or (context and context != ev.context)
+            if (callback and callback != ev.callback and callback !=
+            ev.callback._callback) or (context and context != ev.context)
               retain.push ev
-        delete @_events[name] if !retain.length
-    this
+        delete @_events[name] unless retain.length
+    @
   # Trigger one or many events, firing all bound callbacks. Callbacks are
   # passed the same arguments as `trigger` is, apart from the event name
   # (unless you're listening on `"all"`, which will cause your callback to
@@ -68,21 +71,21 @@ class Backbone.Events
     allEvents = @_events.all
     triggerEvents events, args if events
     triggerEvents allEvents, arguments if allEvents
-    this
+    @
   # Tell this object to stop listening to either specific events ... or
   # to every object it's currently listening to.
   @stopListening: (obj, name, callback) ->
     listeners = @_listeners
-    return this unless listeners
-    deleteListener = !name and !callback
+    return @ unless listeners
+    deleteListener = not name and not callback
     callback = @ if _.isObject name
     if obj
       listeners = {}
       listeners[obj._listenerId] = obj
     for id, v of listeners
-      listeners[id].off name, callback, this
+      listeners[id].off name, callback, @
       delete @_listeners[id] if deleteListener
-    this
+    @
 
 Events = Backbone.Events
 
@@ -93,7 +96,7 @@ eventSplitter = /\s+/
 # names `"change blur"` and jQuery-style event maps `{change: action}`
 # in terms of the existing API.
 eventsApi = (obj, action, name, rest) ->
-  return true if !name
+  return true unless name
   # Handle event maps.
   if _.isObject name
     for key, v of name
@@ -150,9 +153,9 @@ _.each listenMethods, (implementation, method) ->
     obj._listenerId ?= _.uniqueId 'l'
     id = obj._listenerId
     listeners[id] = obj
-    callback = this if _.isObject name
-    obj[implementation] name, callback, this
-    this
+    callback = @ if _.isObject name
+    obj[implementation] name, callback, @
+    @
 
 # Aliases for backwards compatibility.
 Events.bind = Events.on
