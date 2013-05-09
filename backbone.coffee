@@ -35,7 +35,7 @@ else
 
 # Require Underscore, if we're on the server, and it's not already present.
 _ = root._
-_ = require('underscore') if !_? and require?
+_ = require 'underscore' if !_? and require?
 
 # Map from CRUD to HTTP for our default `Backbone.sync` implementation.
 methodMap =
@@ -67,7 +67,7 @@ _.extend Backbone,
   emulateJSON: false
   # Set the default implementation of `Backbone.ajax` to proxy through to `$`.
   # Override this if you'd like to use a different library.
-  ajax: -> Backbone.$.ajax.apply Backbone.$, arguments
+  ajax: -> Backbone.$.ajax arguments...
   # Backbone.sync
   # -------------
   #
@@ -111,7 +111,7 @@ _.extend Backbone,
     # For older servers, emulate JSON by encoding the request into an HTML-form.
     if options.emulateJSON
       params.contentType = 'application/x-www-form-urlencoded'
-      params.data = if params.data then {model: params.data} else {}
+      params.data = if params.data then model: params.data else {}
 
     # For older servers, emulate HTTP by mimicking the HTTP method with `_method`
     # And an `X-HTTP-Method-Override` header.
@@ -155,24 +155,23 @@ class Backbone.Events
   # Bind an event to a `callback` function. Passing `"all"` will bind
   # the callback to all events fired.
   @on: (name, callback, context) ->
-    return @ if !eventsApi(@, 'on', name, [callback, context]) or !callback
+    return this unless eventsApi(this, 'on', name, [callback, context]) and callback
     @_events ?= {}
     @_events[name] ?= []
     events = @_events[name]
     events.push
       callback: callback
       context: context
-      ctx: context or @
-    @
+      ctx: context or this
+    this
   # Bind an event to only be triggered a single time. After the first time
   # the callback is invoked, it will be removed.
   @once: (name, callback, context) ->
-    return @ if !eventsApi(@, 'once', name, [callback, context]) or !callback
-    self = @
-    once = _.once(->
+    return this if !eventsApi(@, 'once', name, [callback, context]) or !callback
+    self = this
+    once = _.once ->
       self.off name, once
-      callback.apply @, arguments
-    )
+      callback.apply this, arguments
     once._callback = callback
     @on name, once, context
   # Remove one or many callbacks. If `context` is null, removes all
@@ -180,51 +179,49 @@ class Backbone.Events
   # callbacks for the event. If `name` is null, removes all bound
   # callbacks for all events.
   @off: (name, callback, context) ->
-    return @ if !@_events or !eventsApi @, 'off', name, [callback, context]
+    return this if !@_events or !eventsApi this, 'off', name, [callback, context]
     if !name and !callback and !context
       @_events = {}
       return @
     names = if name then [name] else _.keys @_events
-    for i in [0...names.length]
-      name = names[i]
+    for name in names
       events = @_events[name]
       if events
         retain = []
         @_events[name] = retain
         if callback or context
-          for j in [0...events.length]
-            ev = events[j]
+          for ev in events
             if (callback and callback != ev.callback and callback != ev.callback._callback) or (context and context != ev.context)
               retain.push ev
         delete @_events[name] if !retain.length
-    @
+    this
   # Trigger one or many events, firing all bound callbacks. Callbacks are
   # passed the same arguments as `trigger` is, apart from the event name
   # (unless you're listening on `"all"`, which will cause your callback to
   # receive the true name of the event as the first argument).
   @trigger: (name) ->
-    return @ if !@_events
+    return @ unless @_events
     args = slice.call arguments, 1
-    return @ if !eventsApi @, 'trigger', name, args
+    return @ unless eventsApi @, 'trigger', name, args
     events = @_events[name]
     allEvents = @_events.all
-    triggerEvents(events, args) if events
-    triggerEvents(allEvents, arguments) if allEvents
-    @
+    triggerEvents events, args if events
+    triggerEvents allEvents, arguments if allEvents
+    this
   # Tell this object to stop listening to either specific events ... or
   # to every object it's currently listening to.
   @stopListening: (obj, name, callback) ->
     listeners = @_listeners
-    return @ if !listeners
+    return this unless listeners
     deleteListener = !name and !callback
     callback = @ if _.isObject name
     if obj
       listeners = {}
       listeners[obj._listenerId] = obj
     for id, v of listeners
-      listeners[id].off(name, callback, @)
+      listeners[id].off name, callback, this
       delete @_listeners[id] if deleteListener
-    @
+    this
 
 Events = Backbone.Events
 
@@ -239,13 +236,13 @@ eventsApi = (obj, action, name, rest) ->
   # Handle event maps.
   if _.isObject name
     for key, v of name
-      obj[action].apply obj, [key, name[key]].concat(rest)
+      obj[action] ([key, name[key]].concat rest)...
     return false
   # Handle space separated event names.
   if eventSplitter.test name
     names = name.split eventSplitter
     for i in [0...names.length]
-      obj[action].apply obj, [names[i]].concat(rest)
+      obj[action] ([names[i]].concat rest)...
     return false
   true
 
@@ -255,9 +252,7 @@ eventsApi = (obj, action, name, rest) ->
 triggerEvents = (events, args) ->
   i = -1
   l = events.length
-  a1 = args[0]
-  a2 = args[1]
-  a3 = args[2]
+  [a1, a2, a3] = args
   switch args.length
     when 0
       while ++i < l
@@ -295,8 +290,8 @@ _.each listenMethods, (implementation, method) ->
     id = obj._listenerId
     listeners[id] = obj
     callback = this if _.isObject name
-    obj[implementation] name, callback, @
-    @
+    obj[implementation] name, callback, this
+    this
 
 # Aliases for backwards compatibility.
 Events.bind = Events.on
@@ -328,11 +323,11 @@ class Backbone.Model
     @collection = options.collection if options.collection
     attrs = @parse(attrs, options) or {} if options.parse
     options._attrs = attrs
-    defaults = _.result @, 'defaults'
-    attrs = _.defaults({}, attrs, defaults) if defaults
+    defaults = _.result this, 'defaults'
+    attrs = _.defaults {}, attrs, defaults if defaults
     @set attrs, options
     @changed = {}
-    @initialize.apply @, arguments
+    @initialize arguments...
   # A hash of attributes whose current and previous value differ.
   changed: null
   # The value returned during the last failed validation.
@@ -348,7 +343,7 @@ class Backbone.Model
   toJSON: (options) -> _.clone @attributes
   # Proxy `Backbone.sync` by default -- but override this if you need
   # custom syncing semantics for *this* particular model.
-  sync: -> Backbone.sync.apply @, arguments
+  sync: -> Backbone.sync.apply this, arguments
   # Get the value of an attribute.
   get: (attr) -> @attributes[attr]
   # Get the HTML-escaped value of an attribute.
@@ -360,7 +355,7 @@ class Backbone.Model
   # the core primitive operation of a model, updating the data and notifying
   # anyone who needs to know about the change in state. The heart of the beast.
   set: (key, val, options = {}) ->
-    return @ if !key?
+    return this unless key?
     
     # Handle both `"key", value` and `{key: value}` -style arguments.
     if _.isObject key
@@ -371,7 +366,7 @@ class Backbone.Model
       attrs[key] = val
     
     # Run validation.
-    return false if !@_validate attrs, options
+    return false unless @_validate attrs, options
     
     # Extract attributes and options.
     unset = options.unset
@@ -380,7 +375,7 @@ class Backbone.Model
     changing = @_changing
     @_changing = true
     
-    if !changing
+    unless changing
       @_previousAttributes = _.clone @attributes
       @changed = {}
     
@@ -394,7 +389,7 @@ class Backbone.Model
     for attr, v of attrs
       val = attrs[attr]
       changes.push(attr) if !_.isEqual current[attr], val
-      if !_.isEqual prev[attr], val
+      unless _.isEqual prev[attr], val
         @changed[attr] = val
       else
         delete @changed[attr]
@@ -406,13 +401,13 @@ class Backbone.Model
     # Trigger all relevant attribute changes.
     if !silent
       @_pending = true if changes.length
-      for i in [0...changes.length]
-        @trigger 'change:' + changes[i], @, current[changes[i]], options
+      for change in changes
+        @trigger 'change:' + change, @, current[change], options
 
     # You might be wondering why there's a `while` loop here. Changes can
     # be recursively nested within `"change"` events.
     return @ if changing
-    if !silent
+    unless silent
       while @_pending
         @_pending = false
         @trigger 'change', @, options
@@ -432,7 +427,7 @@ class Backbone.Model
   # Determine if the model has changed since the last `"change"` event.
   # If you specify an attribute name, determine if that attribute has changed.
   hasChanged: (attr) ->
-    return !_.isEmpty @changed if !attr?
+    return !_.isEmpty @changed unless attr?
     return _.has @changed, attr
   # Return an object containing all the attributes that have changed, or
   # false if there are no changed attributes. Useful for determining what
@@ -441,13 +436,13 @@ class Backbone.Model
   # You can also pass an attributes object to diff against the model,
   # determining if there *would be* a change.
   changedAttributes: (diff) ->
-    if !diff
+    unless diff
       return if @hasChanged() then _.clone(@changed) else false
     changed = false
     old = if @_changing then @_previousAttributes else @attributes
     for attr, v of diff
       continue if _.isEqual old[attr], v
-      changed = {} if !changed
+      changed = {} unless changed
       changed[attr] = v
     return changed
   # Get the previous value of an attribute, recorded at the time the last
@@ -463,15 +458,15 @@ class Backbone.Model
   # triggering a `"change"` event.
   fetch: (options = {}) ->
     options = _.clone options
-    options.parse = true if !options.parse?
+    options.parse = true unless options.parse?
     model = @
     success = options.success
     options.success = (resp) ->
       return false if !model.set model.parse(resp, options), options
       success(model, resp, options) if success
       model.trigger 'sync', model, resp, options
-    wrapError @, options
-    @sync 'read', @, options
+    wrapError this, options
+    @sync 'read', this, options
   # Set a hash of model attributes, and sync the model to the server.
   # If the server returns an attributes hash that differs, the model's
   # state will be `set` again.
@@ -492,9 +487,9 @@ class Backbone.Model
     # `set(attr).save(null, opts)` with validation. Otherwise, check if
     # the model will be valid when the attributes, if any, are set.
     if attrs and !options.wait
-      return false if !@set attrs, options
+      return false unless @set attrs, options
     else
-      return false if !@_validate attrs, options
+      return false unless @_validate attrs, options
 
     # Set temporary attributes if `{wait: true}`.
     if attrs and options.wait
@@ -591,7 +586,7 @@ _.each modelMethods, (method) ->
   Model.prototype[method] = ->
     args = slice.call arguments
     args.unshift @attributes
-    _[method].apply _, args
+    _[method] args...
 
 ###*
   Backbone.Collection
@@ -627,12 +622,12 @@ class Backbone.Collection
   model: Model
   
   constructor: (models, options) ->
-    options or (options = {})
+    options or= {}
     @model = options.model if options.model
-    @comparator = options.comparator if !_.isUndefined options.comparator
+    @comparator = options.comparator if not _.isUndefined options.comparator
     @_reset()
-    @initialize.apply @, arguments
-    @reset(models, _.extend({silent: true}, options)) if models
+    @initialize arguments...
+    @reset models, _.extend({silent: true}, options) if models
   
   # Initialize is an empty function by default. Override it with your own
   # initialization logic.
@@ -654,17 +649,17 @@ class Backbone.Collection
     models = if _.isArray(models) then models.slice() else [models]
     for i in [0...models.length]
       model = @get models[i]
-      continue if !model
+      continue unless model
       delete @_byId[model.id]
       delete @_byId[model.cid]
       index = @indexOf model
       @models.splice index, 1
       @length--
-      if !options.silent
+      unless options.silent
         options.index = index
         model.trigger 'remove', model, @, options
       @_removeReference model
-    @
+    this
 
   # Update a collection by `set`-ing a new list of models, adding new ones,
   # removing models that are no longer present, and merging models that
@@ -673,25 +668,25 @@ class Backbone.Collection
   set: (models, options = {}) ->
     options = _.defaults options, setOptions
     models = @parse(models, options) if options.parse
-    if !_.isArray models
+    unless _.isArray models
       models = if models then [models] else []
     at = options.at
     sortable = @comparator and !at? and options.sort != false
-    sortAttr = if _.isString(@comparator) then @comparator else null
+    sortAttr = if _.isString @comparator then @comparator else null
     toAdd = []
     toRemove = []
     modelMap = {}
     add = options.add
     merge = options.merge
     remove = options.remove
-    order = if !sortable and add and remove then [] else false
+    order = if not sortable and add and remove then [] else false
 
     # Turn bare objects into model references, and prevent invalid models
     # from being added.
     for i in [0...models.length]
       attrs = models[i]
       model = @_prepareModel attrs, options
-      continue if !model
+      continue unless model
 
       # If a duplicate is found, prevent it from being added and
       # optionally merge it into the existing model.
@@ -717,7 +712,7 @@ class Backbone.Collection
     if remove
       for i in [0...@length]
         model = @models[i]
-        toRemove.push(model) if !modelMap[model.cid]
+        toRemove.push model unless modelMap[model.cid]
       @remove(toRemove, options) if toRemove.length
 
     # See if sorting is needed, update `length` and splice in new models.
@@ -731,26 +726,24 @@ class Backbone.Collection
         push.apply @models, (order or toAdd)
 
     # Silently sort the collection if appropriate.
-    @sort(silent: true) if sort
+    @sort silent: true if sort
 
     return @ if options.silent
 
     # Trigger `add` events.
-    for i in [0...toAdd.length]
-      model = toAdd[i]
-      model.trigger 'add', model, @, options
+    for model in toAdd
+      model.trigger 'add', model, this, options
 
     # Trigger `sort` if the collection was sorted.
-    @trigger('sort', @, options) if sort or (order and order.length)
-    @
+    @trigger 'sort', this, options if sort or (order and order.length)
+    this
     
   # When you have more items than you want to add or remove individually,
   # you can reset the entire set with a new list of models, without firing
   # any granular `add` or `remove` events. Fires `reset` when finished.
   # Useful for bulk operations and optimizations.
   reset: (models, options = {}) ->
-    for i in [0...@models.length]
-      @_removeReference @models[i]
+    @_removeReference model for model in @models
     options.previousModels = @models
     @_reset()
     @add models, _.extend({silent: true}, options)
@@ -787,7 +780,7 @@ class Backbone.Collection
   # Get a model from the set by id.
   get: (obj) ->
     return undefined if !obj?
-    @_byId[if obj.id? then obj.id else obj.cid or obj]
+    @_byId[obj.id ? (obj.cid or obj)]
 
   # Get the model at the given index.
   at: (index) -> @models[index]
@@ -797,11 +790,10 @@ class Backbone.Collection
   where: (attrs, first) ->
     if _.isEmpty attrs
       return if first then undefined else []
-    @[if first then 'find' else 'filter']((model) ->
+    @[if first then 'find' else 'filter'] (model) ->
       for key, v of attrs
         return false if v != model.get(key)
       true
-    )
 
   # Return the first model with matching attributes. Useful for simple cases
   # of `find`.
@@ -811,20 +803,20 @@ class Backbone.Collection
   # normal circumstances, as the set will maintain sort order as each item
   # is added.
   sort: (options = {}) ->
-    throw new Error('Cannot sort a set without a comparator') if !@comparator
+    throw new Error('Cannot sort a set without a comparator') unless @comparator
     # Run sort based on type of `comparator`.
     if _.isString(@comparator) or @comparator.length == 1
       @models = @sortBy @comparator, @
     else
       @models.sort _.bind(@comparator, @)
-    @trigger('sort', @, options) if !options.silent
-    @
+    @trigger 'sort', this, options if !options.silent
+    this
   
   # Figure out the smallest index at which a model should be inserted so as
   # to maintain order.
   sortedIndex: (model, value, context) ->
     value = value or @comparator
-    iterator = if _.isFunction(value) then value else ((model) -> model.get value)
+    iterator = if _.isFunction value then value else (model) -> model.get(value)
     _.sortedIndex @models, model, iterator, context
 
   # Pluck an attribute from each model in the collection.
@@ -841,7 +833,7 @@ class Backbone.Collection
     options.success = (resp) ->
       method = if options.reset then 'reset' else 'set'
       collection[method] resp, options
-      success(collection, resp, options) if success
+      success collection, resp, options if success
       collection.trigger 'sync', collection, resp, options
     wrapError @, options
     @sync 'read', @, options
@@ -852,13 +844,13 @@ class Backbone.Collection
   create: (model, options = {}) ->
     options = _.clone options
     model = @_prepareModel model, options
-    return false if !model
-    @add(model, options) if !options.wait
+    return false unless model
+    @add(model, options) unless options.wait
     collection = @
     success = options.success
     options.success = (resp) ->
-      collection.add(model, options) if options.wait
-      success(model, resp, options) if success
+      collection.add model, options if options.wait
+      success model, resp, options if success
     model.save null, options
     model
   
@@ -880,19 +872,19 @@ class Backbone.Collection
   # collection.
   _prepareModel: (attrs, options = {}) ->
     if attrs instanceof Model
-      attrs.collection = @ if !attrs.collection
+      attrs.collection = this unless attrs.collection
       return attrs
-    options.collection = @
+    options.collection = this
     model = new @model attrs, options
-    if !model._validate attrs, options
-      @trigger 'invalid', @, attrs, options
+    unless model._validate attrs, options
+      @trigger 'invalid', this, attrs, options
       return false
     model
     
   # Internal method to sever a model's ties to a collection.
   _removeReference: (model) ->
-    delete model.collection if @ == model.collection
-    model.off 'all', @_onModelEvent, @
+    delete model.collection if this == model.collection
+    model.off 'all', @_onModelEvent, this
 
   # Internal method called every time a model in the set fires an event.
   # Sets need to update their indexes when models change ids. All other
@@ -902,7 +894,7 @@ class Backbone.Collection
     return if (event == 'add' or event == 'remove') and collection != @
     @remove model, options if event == 'destroy'
     if model and event == "change:#{model.idAttribute}"
-      delete @_byId[model.previous(model.idAttribute)]
+      delete @_byId[model.previous model.idAttribute]
       @_byId[model.id] = model if model.id?
     @trigger.apply @, arguments
 
@@ -1031,7 +1023,7 @@ class Backbone.View
   # not `change`, `submit`, and `reset` in Internet Explorer.
   delegateEvents: (events) ->
     events = events or _.result @, 'events'
-    return @ if !events
+    return this unless events
     @undelegateEvents()
     for key, method of events
       method = @[events[key]] if !_.isFunction method
@@ -1045,14 +1037,14 @@ class Backbone.View
         @$el.on eventName, method
       else
         @$el.on eventName, selector, method
-    @
+    this
 
   # Clears all callbacks previously bound to the view with `delegateEvents`.
   # You usually don't need to use this, but may wish to if you have multiple
   # Backbone views attached to the same DOM element.
   undelegateEvents: ->
     @$el.off '.delegateEvents' + @cid
-    @
+    this
   
   # Ensure that the View has a DOM element to render into.
   # If `this.el` is a string, pass it through `$()`, take the first
@@ -1063,7 +1055,7 @@ class Backbone.View
       attrs = _.extend {}, _.result(@, 'attributes')
       attrs.id = _.result(@, 'id') if @id
       attrs['class'] = _.result(@, 'className') if @className
-      $el = Backbone.$('<' + _.result(@, 'tagName') + '>').attr attrs
+      $el = Backbone.$("<#{_.result @, 'tagName'}>").attr attrs
       @setElement $el, false
     else
       @setElement _.result(@, 'el'), false
@@ -1091,7 +1083,7 @@ class Backbone.Router
   constructor: (options = {}) ->
     @routes = options.routes if options.routes
     @_bindRoutes()
-    @initialize.apply @, arguments
+    @initialize arguments...
   
   # Initialize is an empty function by default. Override it with your own
   # initialization logic.
@@ -1117,12 +1109,12 @@ class Backbone.Router
       router.trigger.apply router, ['route:' + name].concat(args)
       router.trigger 'route', name, args
       Backbone.history.trigger 'route', router, name, args
-    @
+    this
 
   # Simple proxy to `Backbone.history` to save a fragment into the history.
   navigate: (fragment, options) ->
     Backbone.history.navigate fragment, options
-    @
+    this
 
   # Bind all defined routes to `Backbone.history`. We have to reverse the
   # order of the routes here to support behavior where the most general
@@ -1199,17 +1191,17 @@ class Backbone.History
   # Gets the true hash value. Cannot use location.hash directly due to bug
   # in Firefox where location.hash will always be decoded.
   getHash: (window) ->
-    match = (window or @).location.href.match /#(.*)$/
+    match = (window or this).location.href.match /#(.*)$/
     if match then match[1] else ''
 
   # Get the cross-browser normalized URL fragment, either from the URL,
   # the hash, or the override.
   getFragment: (fragment, forcePushState) ->
-    if !fragment?
+    unless fragment?
       if @_hasPushState or !@_wantsHashChange or forcePushState
         fragment = @location.pathname
         root = @root.replace trailingSlash, ''
-        fragment = fragment.substr(root.length) if !fragment.indexOf root
+        fragment = fragment.substr root.length unless fragment.indexOf root
       else
         fragment = @getHash()
     fragment.replace routeStripper, ''
@@ -1232,7 +1224,7 @@ class Backbone.History
     oldIE = (isExplorer.exec(navigator.userAgent.toLowerCase()) and (!docMode or docMode <= 7))
 
     # Normalize root to always include a leading and trailing slash.
-    @root = ('/' + @root + '/').replace rootStripper, '/'
+    @root = "/#{@root}/".replace rootStripper, '/'
 
     if oldIE and @_wantsHashChange
       @iframe = Backbone.$('<iframe src="javascript:0" tabindex="-1" />').hide().appendTo('body')[0].contentWindow
@@ -1266,7 +1258,7 @@ class Backbone.History
       @fragment = @getHash().replace routeStripper, ''
       @history.replaceState {}, document.title, @root + @fragment + loc.search
 
-    @loadUrl() if !@options.silent
+    @loadUrl() unless @options.silent
   
   # Disable Backbone.history, perhaps temporarily. Not useful in a real app,
   # but possibly useful for unit testing Routers.
@@ -1310,7 +1302,7 @@ class Backbone.History
   # you wish to modify the current URL without adding an entry to the history.
   navigate: (fragment, options) ->
     return false if !History.started
-    options = {trigger: options} if !options or options == true
+    options = trigger: options if !options or options == true
     fragment = @getFragment fragment or ''
     return if @fragment == fragment
     @fragment = fragment
@@ -1327,7 +1319,7 @@ class Backbone.History
         # Opening and closing the iframe tricks IE7 and earlier to push a
         # history entry on hash-tag change.  When replace is true, we don't
         # want this.
-        @iframe.document.open().close() if !options.replace
+        @iframe.document.open().close() unless options.replace
         @_updateHash @iframe.location, fragment, options.replace
     # If you've told us that you explicitly don't want fallback hashchange-
     # based history, then `navigate` becomes a page refresh.

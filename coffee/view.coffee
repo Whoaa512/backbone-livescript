@@ -93,7 +93,7 @@ class Backbone.View
   # not `change`, `submit`, and `reset` in Internet Explorer.
   delegateEvents: (events) ->
     events = events or _.result @, 'events'
-    return @ if !events
+    return this unless events
     @undelegateEvents()
     for key, method of events
       method = @[events[key]] if !_.isFunction method
@@ -107,14 +107,14 @@ class Backbone.View
         @$el.on eventName, method
       else
         @$el.on eventName, selector, method
-    @
+    this
 
   # Clears all callbacks previously bound to the view with `delegateEvents`.
   # You usually don't need to use this, but may wish to if you have multiple
   # Backbone views attached to the same DOM element.
   undelegateEvents: ->
     @$el.off '.delegateEvents' + @cid
-    @
+    this
   
   # Ensure that the View has a DOM element to render into.
   # If `this.el` is a string, pass it through `$()`, take the first
@@ -125,7 +125,7 @@ class Backbone.View
       attrs = _.extend {}, _.result(@, 'attributes')
       attrs.id = _.result(@, 'id') if @id
       attrs['class'] = _.result(@, 'className') if @className
-      $el = Backbone.$('<' + _.result(@, 'tagName') + '>').attr attrs
+      $el = Backbone.$("<#{_.result @, 'tagName'}>").attr attrs
       @setElement $el, false
     else
       @setElement _.result(@, 'el'), false

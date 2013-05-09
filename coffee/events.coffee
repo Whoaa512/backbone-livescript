@@ -16,24 +16,23 @@ class Backbone.Events
   # Bind an event to a `callback` function. Passing `"all"` will bind
   # the callback to all events fired.
   @on: (name, callback, context) ->
-    return @ if !eventsApi(@, 'on', name, [callback, context]) or !callback
+    return this unless eventsApi(this, 'on', name, [callback, context]) and callback
     @_events ?= {}
     @_events[name] ?= []
     events = @_events[name]
     events.push
       callback: callback
       context: context
-      ctx: context or @
-    @
+      ctx: context or this
+    this
   # Bind an event to only be triggered a single time. After the first time
   # the callback is invoked, it will be removed.
   @once: (name, callback, context) ->
-    return @ if !eventsApi(@, 'once', name, [callback, context]) or !callback
-    self = @
-    once = _.once(->
+    return this if !eventsApi(@, 'once', name, [callback, context]) or !callback
+    self = this
+    once = _.once ->
       self.off name, once
-      callback.apply @, arguments
-    )
+      callback.apply this, arguments
     once._callback = callback
     @on name, once, context
   # Remove one or many callbacks. If `context` is null, removes all
@@ -41,51 +40,49 @@ class Backbone.Events
   # callbacks for the event. If `name` is null, removes all bound
   # callbacks for all events.
   @off: (name, callback, context) ->
-    return @ if !@_events or !eventsApi @, 'off', name, [callback, context]
+    return this if !@_events or !eventsApi this, 'off', name, [callback, context]
     if !name and !callback and !context
       @_events = {}
       return @
     names = if name then [name] else _.keys @_events
-    for i in [0...names.length]
-      name = names[i]
+    for name in names
       events = @_events[name]
       if events
         retain = []
         @_events[name] = retain
         if callback or context
-          for j in [0...events.length]
-            ev = events[j]
+          for ev in events
             if (callback and callback != ev.callback and callback != ev.callback._callback) or (context and context != ev.context)
               retain.push ev
         delete @_events[name] if !retain.length
-    @
+    this
   # Trigger one or many events, firing all bound callbacks. Callbacks are
   # passed the same arguments as `trigger` is, apart from the event name
   # (unless you're listening on `"all"`, which will cause your callback to
   # receive the true name of the event as the first argument).
   @trigger: (name) ->
-    return @ if !@_events
+    return @ unless @_events
     args = slice.call arguments, 1
-    return @ if !eventsApi @, 'trigger', name, args
+    return @ unless eventsApi @, 'trigger', name, args
     events = @_events[name]
     allEvents = @_events.all
-    triggerEvents(events, args) if events
-    triggerEvents(allEvents, arguments) if allEvents
-    @
+    triggerEvents events, args if events
+    triggerEvents allEvents, arguments if allEvents
+    this
   # Tell this object to stop listening to either specific events ... or
   # to every object it's currently listening to.
   @stopListening: (obj, name, callback) ->
     listeners = @_listeners
-    return @ if !listeners
+    return this unless listeners
     deleteListener = !name and !callback
     callback = @ if _.isObject name
     if obj
       listeners = {}
       listeners[obj._listenerId] = obj
     for id, v of listeners
-      listeners[id].off(name, callback, @)
+      listeners[id].off name, callback, this
       delete @_listeners[id] if deleteListener
-    @
+    this
 
 Events = Backbone.Events
 
@@ -100,13 +97,13 @@ eventsApi = (obj, action, name, rest) ->
   # Handle event maps.
   if _.isObject name
     for key, v of name
-      obj[action].apply obj, [key, name[key]].concat(rest)
+      obj[action] ([key, name[key]].concat rest)...
     return false
   # Handle space separated event names.
   if eventSplitter.test name
     names = name.split eventSplitter
     for i in [0...names.length]
-      obj[action].apply obj, [names[i]].concat(rest)
+      obj[action] ([names[i]].concat rest)...
     return false
   true
 
@@ -116,9 +113,7 @@ eventsApi = (obj, action, name, rest) ->
 triggerEvents = (events, args) ->
   i = -1
   l = events.length
-  a1 = args[0]
-  a2 = args[1]
-  a3 = args[2]
+  [a1, a2, a3] = args
   switch args.length
     when 0
       while ++i < l
@@ -156,8 +151,8 @@ _.each listenMethods, (implementation, method) ->
     id = obj._listenerId
     listeners[id] = obj
     callback = this if _.isObject name
-    obj[implementation] name, callback, @
-    @
+    obj[implementation] name, callback, this
+    this
 
 # Aliases for backwards compatibility.
 Events.bind = Events.on

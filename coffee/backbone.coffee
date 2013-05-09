@@ -35,7 +35,7 @@ else
 
 # Require Underscore, if we're on the server, and it's not already present.
 _ = root._
-_ = require('underscore') if !_? and require?
+_ = require 'underscore' if !_? and require?
 
 # Map from CRUD to HTTP for our default `Backbone.sync` implementation.
 methodMap =
@@ -67,7 +67,7 @@ _.extend Backbone,
   emulateJSON: false
   # Set the default implementation of `Backbone.ajax` to proxy through to `$`.
   # Override this if you'd like to use a different library.
-  ajax: -> Backbone.$.ajax.apply Backbone.$, arguments
+  ajax: -> Backbone.$.ajax arguments...
   # Backbone.sync
   # -------------
   #
@@ -111,7 +111,7 @@ _.extend Backbone,
     # For older servers, emulate JSON by encoding the request into an HTML-form.
     if options.emulateJSON
       params.contentType = 'application/x-www-form-urlencoded'
-      params.data = if params.data then {model: params.data} else {}
+      params.data = if params.data then model: params.data else {}
 
     # For older servers, emulate HTTP by mimicking the HTTP method with `_method`
     # And an `X-HTTP-Method-Override` header.

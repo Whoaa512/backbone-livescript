@@ -20,11 +20,11 @@ class Backbone.Model
     @collection = options.collection if options.collection
     attrs = @parse(attrs, options) or {} if options.parse
     options._attrs = attrs
-    defaults = _.result @, 'defaults'
-    attrs = _.defaults({}, attrs, defaults) if defaults
+    defaults = _.result this, 'defaults'
+    attrs = _.defaults {}, attrs, defaults if defaults
     @set attrs, options
     @changed = {}
-    @initialize.apply @, arguments
+    @initialize arguments...
   # A hash of attributes whose current and previous value differ.
   changed: null
   # The value returned during the last failed validation.
@@ -40,7 +40,7 @@ class Backbone.Model
   toJSON: (options) -> _.clone @attributes
   # Proxy `Backbone.sync` by default -- but override this if you need
   # custom syncing semantics for *this* particular model.
-  sync: -> Backbone.sync.apply @, arguments
+  sync: -> Backbone.sync.apply this, arguments
   # Get the value of an attribute.
   get: (attr) -> @attributes[attr]
   # Get the HTML-escaped value of an attribute.
@@ -52,7 +52,7 @@ class Backbone.Model
   # the core primitive operation of a model, updating the data and notifying
   # anyone who needs to know about the change in state. The heart of the beast.
   set: (key, val, options = {}) ->
-    return @ if !key?
+    return this unless key?
     
     # Handle both `"key", value` and `{key: value}` -style arguments.
     if _.isObject key
@@ -63,7 +63,7 @@ class Backbone.Model
       attrs[key] = val
     
     # Run validation.
-    return false if !@_validate attrs, options
+    return false unless @_validate attrs, options
     
     # Extract attributes and options.
     unset = options.unset
@@ -72,7 +72,7 @@ class Backbone.Model
     changing = @_changing
     @_changing = true
     
-    if !changing
+    unless changing
       @_previousAttributes = _.clone @attributes
       @changed = {}
     
@@ -86,7 +86,7 @@ class Backbone.Model
     for attr, v of attrs
       val = attrs[attr]
       changes.push(attr) if !_.isEqual current[attr], val
-      if !_.isEqual prev[attr], val
+      unless _.isEqual prev[attr], val
         @changed[attr] = val
       else
         delete @changed[attr]
@@ -98,13 +98,13 @@ class Backbone.Model
     # Trigger all relevant attribute changes.
     if !silent
       @_pending = true if changes.length
-      for i in [0...changes.length]
-        @trigger 'change:' + changes[i], @, current[changes[i]], options
+      for change in changes
+        @trigger 'change:' + change, @, current[change], options
 
     # You might be wondering why there's a `while` loop here. Changes can
     # be recursively nested within `"change"` events.
     return @ if changing
-    if !silent
+    unless silent
       while @_pending
         @_pending = false
         @trigger 'change', @, options
@@ -124,7 +124,7 @@ class Backbone.Model
   # Determine if the model has changed since the last `"change"` event.
   # If you specify an attribute name, determine if that attribute has changed.
   hasChanged: (attr) ->
-    return !_.isEmpty @changed if !attr?
+    return !_.isEmpty @changed unless attr?
     return _.has @changed, attr
   # Return an object containing all the attributes that have changed, or
   # false if there are no changed attributes. Useful for determining what
@@ -133,13 +133,13 @@ class Backbone.Model
   # You can also pass an attributes object to diff against the model,
   # determining if there *would be* a change.
   changedAttributes: (diff) ->
-    if !diff
+    unless diff
       return if @hasChanged() then _.clone(@changed) else false
     changed = false
     old = if @_changing then @_previousAttributes else @attributes
     for attr, v of diff
       continue if _.isEqual old[attr], v
-      changed = {} if !changed
+      changed = {} unless changed
       changed[attr] = v
     return changed
   # Get the previous value of an attribute, recorded at the time the last
@@ -155,15 +155,15 @@ class Backbone.Model
   # triggering a `"change"` event.
   fetch: (options = {}) ->
     options = _.clone options
-    options.parse = true if !options.parse?
+    options.parse = true unless options.parse?
     model = @
     success = options.success
     options.success = (resp) ->
       return false if !model.set model.parse(resp, options), options
       success(model, resp, options) if success
       model.trigger 'sync', model, resp, options
-    wrapError @, options
-    @sync 'read', @, options
+    wrapError this, options
+    @sync 'read', this, options
   # Set a hash of model attributes, and sync the model to the server.
   # If the server returns an attributes hash that differs, the model's
   # state will be `set` again.
@@ -184,9 +184,9 @@ class Backbone.Model
     # `set(attr).save(null, opts)` with validation. Otherwise, check if
     # the model will be valid when the attributes, if any, are set.
     if attrs and !options.wait
-      return false if !@set attrs, options
+      return false unless @set attrs, options
     else
-      return false if !@_validate attrs, options
+      return false unless @_validate attrs, options
 
     # Set temporary attributes if `{wait: true}`.
     if attrs and options.wait
@@ -283,4 +283,4 @@ _.each modelMethods, (method) ->
   Model.prototype[method] = ->
     args = slice.call arguments
     args.unshift @attributes
-    _[method].apply _, args
+    _[method] args...

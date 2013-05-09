@@ -19,7 +19,7 @@ class Backbone.Router
   constructor: (options = {}) ->
     @routes = options.routes if options.routes
     @_bindRoutes()
-    @initialize.apply @, arguments
+    @initialize arguments...
   
   # Initialize is an empty function by default. Override it with your own
   # initialization logic.
@@ -45,12 +45,12 @@ class Backbone.Router
       router.trigger.apply router, ['route:' + name].concat(args)
       router.trigger 'route', name, args
       Backbone.history.trigger 'route', router, name, args
-    @
+    this
 
   # Simple proxy to `Backbone.history` to save a fragment into the history.
   navigate: (fragment, options) ->
     Backbone.history.navigate fragment, options
-    @
+    this
 
   # Bind all defined routes to `Backbone.history`. We have to reverse the
   # order of the routes here to support behavior where the most general

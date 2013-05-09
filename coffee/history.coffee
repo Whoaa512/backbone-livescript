@@ -42,17 +42,17 @@ class Backbone.History
   # Gets the true hash value. Cannot use location.hash directly due to bug
   # in Firefox where location.hash will always be decoded.
   getHash: (window) ->
-    match = (window or @).location.href.match /#(.*)$/
+    match = (window or this).location.href.match /#(.*)$/
     if match then match[1] else ''
 
   # Get the cross-browser normalized URL fragment, either from the URL,
   # the hash, or the override.
   getFragment: (fragment, forcePushState) ->
-    if !fragment?
+    unless fragment?
       if @_hasPushState or !@_wantsHashChange or forcePushState
         fragment = @location.pathname
         root = @root.replace trailingSlash, ''
-        fragment = fragment.substr(root.length) if !fragment.indexOf root
+        fragment = fragment.substr root.length unless fragment.indexOf root
       else
         fragment = @getHash()
     fragment.replace routeStripper, ''
@@ -75,7 +75,7 @@ class Backbone.History
     oldIE = (isExplorer.exec(navigator.userAgent.toLowerCase()) and (!docMode or docMode <= 7))
 
     # Normalize root to always include a leading and trailing slash.
-    @root = ('/' + @root + '/').replace rootStripper, '/'
+    @root = "/#{@root}/".replace rootStripper, '/'
 
     if oldIE and @_wantsHashChange
       @iframe = Backbone.$('<iframe src="javascript:0" tabindex="-1" />').hide().appendTo('body')[0].contentWindow
@@ -109,7 +109,7 @@ class Backbone.History
       @fragment = @getHash().replace routeStripper, ''
       @history.replaceState {}, document.title, @root + @fragment + loc.search
 
-    @loadUrl() if !@options.silent
+    @loadUrl() unless @options.silent
   
   # Disable Backbone.history, perhaps temporarily. Not useful in a real app,
   # but possibly useful for unit testing Routers.
@@ -153,7 +153,7 @@ class Backbone.History
   # you wish to modify the current URL without adding an entry to the history.
   navigate: (fragment, options) ->
     return false if !History.started
-    options = {trigger: options} if !options or options == true
+    options = trigger: options if !options or options == true
     fragment = @getFragment fragment or ''
     return if @fragment == fragment
     @fragment = fragment
@@ -170,7 +170,7 @@ class Backbone.History
         # Opening and closing the iframe tricks IE7 and earlier to push a
         # history entry on hash-tag change.  When replace is true, we don't
         # want this.
-        @iframe.document.open().close() if !options.replace
+        @iframe.document.open().close() unless options.replace
         @_updateHash @iframe.location, fragment, options.replace
     # If you've told us that you explicitly don't want fallback hashchange-
     # based history, then `navigate` becomes a page refresh.
