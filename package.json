@@ -1,9 +1,17 @@
 {
-  "name"          : "backbone",
-  "description"   : "Give your JS and CoffeeScript Apps some Backbone with Models, Views, Collections, and Events.",
-  "url"           : "http://backbonecoffee.org",
-  "keywords"      : ["model", "view", "controller", "router", "server", "client", "browser"],
-  "author"        : "Jeremy Ashkenas <jeremy@documentcloud.org>",
+  "name": "backbone",
+  "description": "Give your JS and CoffeeScript Apps some Backbone with Models, Views, Collections, and Events.",
+  "url": "http://backbonecoffee.org",
+  "keywords": [
+    "model",
+    "view",
+    "controller",
+    "router",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "Jeremy Ashkenas <jeremy@documentcloud.org>",
   "dependencies": {
     "underscore": ">=1.4.3",
     "grunt": "~0.4.1",
@@ -12,9 +20,15 @@
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-qunit": "~0.2.1",
-    "grunt-contrib-watch": "~0.4.0"
+    "grunt-contrib-watch": "~0.4.0",
+    "snyk": "^1.316.1"
   },
-  "main"          : "backbone.coffee",
-  "version"       : "1.0.0",
-  "license"       : "MIT"
+  "main": "backbone.coffee",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
